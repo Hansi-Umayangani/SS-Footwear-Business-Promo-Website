@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S&S Footwear</title>
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../../css/products.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<main>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">
+      S&S  FOOTWEAR
+      <img src="../../assets/images/Brand_Logo.png" alt="Brand_Logo" class="brand-logo"></div>
+      
+      <nav class="nav-links" id="nav-menu">
+      <a href="../customer/home.html">Home</a>
+      <a href="../customer/products.html">Products</a>
+      <a href="../customer/customization.html">Customization</a>
+      <a href="../customer/reviews.html">Reviews</a>
+      <a href="../customer/contact.html">Contact Us</a>
+    </nav>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+  </header>
+
+<!-- Products Section -->
+<section class="products-page">
+  <div class="section-header">
+    <h2>Our Products</h2>
+    <p>Explore our comprehensive collection of premium footwear designed for comfort, style, and durability.</p>
+    <div class="search-bar">
+      <input type="text" id="search-category" name="searchCategory" placeholder="Search Category">
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="product-filters">
+    <button class="filter-btn active" data-category="all">All</button>
+    <button class="filter-btn" data-category="men-formal">Men's Formal</button>
+    <button class="filter-btn" data-category="men-sandals">Men's Sandals</button>
+    <button class="filter-btn" data-category="women-heels">Women's Heels</button>
+    <button class="filter-btn" data-category="women-flats">Women's Flats</button>
+    <button class="filter-btn" data-category="women-sandals">Women's Sandals</button>
+    <button class="filter-btn" data-category="school-shoes">School Shoes</button>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="product-grid" id="product-grid">
+    <!--products will be dynamically inserted here-->
+  </div>
+</section>
+
+
+    <!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+
+    <!-- Brand/About -->
+    <div class="footer-about">
+      <div class="brand">
+        <h3>S&S FOOTWEARS</h3>
+        <img src="../../assets/images/Brand_Logo.png" alt="S&S Logo">
+      </div>
+      <p>
+        Crafted With Care, Worn With Pride.<br>
+        Your Journey Matters To Us.<br>
+        We are Honored To Be Part Of Your Walk.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../customer/home.html">Home</a></li>
+        <li><a href="../customer/products.html">Products</a></li>
+        <li><a href="../customer/customization.html">Customization</a></li>
+        <li><a href="../customer/reviews.html">Reviews</a></li>
+        <li><a href="../customer/contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="contact-info">
+      <h4>Contact Info</h4>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/phone.png" alt="Phone" class="contact-icon">
+        <a href="tel:0753755025">0753755005</a>
+      </p>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/mail.png" alt="Email" class="contact-icon">
+        <a href="mailto:ss01.footwear@gmail.com">ss01.footwear@gmail.com</a>
+      </p>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/location.png" alt="Location" class="contact-icon">
+        <a href="https://maps.app.goo.gl/aLB4kqipQs7XuvLc8/" target="_blank">
+        S&S Shoes,<br>
+        No.14, Madolompitiya Road,<br>
+        Pallewela.
+        </a>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    © 2025 S&S Footwear. All Rights Reserved.<br/>
+
+        <a id="admin-link" href="../admin/login.html" style="font-size:12px; color:#7a5a3d; display:none;">
+            ----------
+        </a>
+  </div>
+</footer>
+
+<script type="module" src="/js/products.js"></script>
+<script type="module" src="/js/admin-product-management.js"></script>
+<script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+<script type="module">
+import { auth } from "../../js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+const ADMIN_EMAILS = [
+    "gimhanihansika2020@gmail.com",
+    "ss01.footwear@gmail.com"
+];
+
+onAuthStateChanged(auth, (user) => {
+  if (user && ADMIN_EMAILS.includes(user.email)) {
+    document.getElementById("admin-link").style.display = "inline";
+  }
+});
+</script>
+
+</body>
+</html>
