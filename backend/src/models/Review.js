@@ -30,6 +30,10 @@ const reviewSchema = new mongoose.Schema(
     image: {
       type: String,
       default: ""
+    },
+    isApproved: {
+      type: Boolean,
+      default: false   // admin approval flag
     }
   },
   {
