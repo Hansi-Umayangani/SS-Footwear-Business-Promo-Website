@@ -1,104 +1,69 @@
-import { auth, db } from "./firebase-config.js"; 
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
 // ---------------------- DOM ELEMENTS ----------------------
 document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".nav-links a");
-  const userMenu = document.getElementById("userMenu");
-  const userDropdown = document.getElementById("userDropdown");
-  const loginOption = document.getElementById("loginOption");
-  const logoutOption = document.getElementById("logoutOption");
   const menuToggle = document.getElementById("menu-toggle");
   const navMenu = document.getElementById("nav-menu");
   const customForm = document.getElementById("customRequestForm");
 
   const currentPage = window.location.pathname.split("/").pop();
 
-// -------- Highlight nav link --------
-  navLinks.forEach(link => {
+  /* ---------------- Highlight active nav link ---------------- */
+  navLinks.forEach((link) => {
     const linkPage = link.getAttribute("href").split("/").pop();
     if (linkPage === currentPage) link.classList.add("active");
   });
 
-  if (currentPage === "admin-login.html") 
-    userMenu.classList.add("active");
-
-  if (userMenu && userDropdown) {
-    userMenu.addEventListener("click", () => {
-      userDropdown.style.display = userDropdown.style.display === "block" ? "none" : "block";
-    });
-    document.addEventListener("click", (e) => {
-      if (!userMenu.contains(e.target)) userDropdown.style.display = "none";
-    });
-  }
-
+  /* ---------------- Mobile menu toggle ---------------- */
   if (menuToggle && navMenu) {
     menuToggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
     });
   }
 
-  // ---------------------- FIREBASE AUTH ----------------------
-  if (auth) {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (loginOption) loginOption.style.display = "none";
-        if (logoutOption) logoutOption.style.display = "flex";
-        if (userMenu) userMenu.classList.add("active");
-      } else {
-        if (loginOption) loginOption.style.display = "flex";
-        if (logoutOption) logoutOption.style.display = "none";
-        if (userMenu && currentPage !== "admin-login.html") userMenu.classList.remove("active");
-      }
-    });
+  /* ---------------- Customization Form Submission ---------------- */
+  if (!customForm) return;
 
-    // ---------------------- LOGOUT ----------------------
-    if (logoutOption) {
-      logoutOption.addEventListener("click", async (e) => {
-        e.preventDefault();
-        try {
-          await signOut(auth);
-          window.location.reload();
-        } catch (err) {
-          console.error("Logout failed:", err);
-        }
-      });
+  customForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = {
+      customerName: document.getElementById("customerName").value.trim(),
+      contactNumber: document.getElementById("contactNumber").value.trim(),
+      emailAddress: document.getElementById("emailAddress").value.trim(),
+      productType: document.getElementById("productType").value.trim(),
+      customDetails: document.getElementById("customDetails").value.trim(),
+      contactMethod: document.querySelector(
+        'input[name="contactMethod"]:checked'
+      )?.value
+    };
+
+    // Basic validation
+    if (
+      !data.customerName ||
+      !data.contactNumber ||
+      !data.emailAddress ||
+      !data.contactMethod
+    ) {
+      alert("Please fill all required fields.");
+      return;
     }
-  }
-  
-  // ---------------------- CUSTOMIZATION FORM SUBMISSION ----------------------
-  if (customForm) {
-    customForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
 
-      // Get form values
-      const customerName = document.getElementById("customerName")?.value.trim() || "";
-      const contactNumber = document.getElementById("contactNumber")?.value.trim() || "";
-      const emailAddress = document.getElementById("emailAddress")?.value.trim() || "";
-      const productType = document.getElementById("productType")?.value.trim() || "";
-      const customDetails = document.getElementById("customDetails")?.value.trim() || "";
-      const contactMethod = document.querySelector('input[name="contactMethod"]:checked')?.value || "";
+    try {
+      const response = await fetch("/api/custom-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-      try {
-        // Add a new document in the 'customRequests' collection
-        await addDoc(collection(db, "customRequests"), {
-          customerName,
-          contactNumber,
-          emailAddress,
-          productType,
-          customDetails,
-          contactMethod,
-          status: "Pending",
-          timestamp: serverTimestamp()
-        });
-
-        alert("Your customization request has been submitted successfully!");
-        customForm.reset();
-      } catch (err) {
-        console.error("Error submitting request:", err);
-        alert("Failed to submit request. Please try again.");
+      if (!response.ok) {
+        throw new Error("Failed to submit request");
       }
-    });
-  }
+
+      alert("Your customization request has been submitted successfully!");
+      customForm.reset();
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
+  });
 });
