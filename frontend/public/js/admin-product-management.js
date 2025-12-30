@@ -1,52 +1,37 @@
-import { auth } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-import { getFirestore, collection, addDoc,getDocs, deleteDoc, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-
 // ----------------------- DOM ELEMENTS -----------------------
 const loginOption = document.getElementById("loginOption");
 const logoutOption = document.getElementById("logoutOption");
 const userMenu = document.getElementById("userMenu");
 const userDropdown = document.getElementById("userDropdown");
+
 const productForm = document.querySelector(".product-form");
 const productName = document.getElementById("product-name");
 const category = document.getElementById("category");
 const price = document.getElementById("price");
 const description = document.getElementById("description");
 const productsTbody = document.getElementById("products-tbody");
+
 const previewImg = document.getElementById("preview-img");
 const imagePreview = document.getElementById("image-preview");
+const uploadBox = document.getElementById("upload-box");
+const browseBtn = document.getElementById("browse-btn");
 
 let uploadedImageURL = "";
+let editProductId = null;
 
-// ----------------------- AUTH & NAVIGATION -----------------------
-function initAuth() {
-  if (!loginOption || !logoutOption) return;
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loginOption.style.display = "none";
-      logoutOption.style.display = "flex";
-      loadProducts(); // ✅ Load products here
-    } else {
-      loginOption.style.display = "flex";
-      logoutOption.style.display = "none";
-    }
-  });
-
-  logoutOption.addEventListener("click", async (e) => {
-    e.preventDefault();
-    try {
-      await signOut(auth);
-      window.location.href = "login.html";
-    } catch (err) {
-      console.error("Logout failed:", err.message);
-    }
-  });
+// ----------------------- AUTH UI (TEMP) -----------------------
+if (loginOption && logoutOption) {
+  loginOption.style.display = "none";
+  logoutOption.style.display = "flex";
 }
 
-function initDropdown() {
-  if (!userMenu || !userDropdown) return;
+logoutOption?.addEventListener("click", (e) => {
+  e.preventDefault();
+  window.location.href = "login.html";
+});
 
+// ----------------------- DROPDOWN -----------------------
+if (userMenu && userDropdown) {
   userMenu.addEventListener("click", (e) => {
     e.stopPropagation();
     userDropdown.style.display =
@@ -60,36 +45,8 @@ function initDropdown() {
   });
 }
 
-function highlightNav() {
-  const btnProducts = document.getElementById("btn-products");
-  const btnReviews = document.getElementById("btn-reviews");
-  const btnCustomization = document.getElementById("btn-customization");
-  const url = window.location.href;
-
-  if (btnProducts && url.includes("product-management.html")) btnProducts.classList.add("active");
-  if (btnReviews && url.includes("review-management.html")) btnReviews.classList.add("active");
-  if (btnCustomization && url.includes("customization-management.html")) btnCustomization.classList.add("active");
-}
-
-// ----------------------- FIRESTORE -----------------------
-const db = getFirestore();
-const productsCollection = collection(db, "products");
-
-
-// ----------------------- CLOUDINARY WIDGET -----------------------
-function initCloudinary() {
-  
-  const uploadBox = document.getElementById("upload-box");
-
-  console.log("Checking Cloudinary and uploadBox...");
-  console.log("window.cloudinary:", window.cloudinary);
-  console.log("uploadBox:", uploadBox);
-  
-  if (!window.cloudinary || !uploadBox) {
-    console.error("Cloudinary widget not loaded or uploadBox missing.");
-    return;
-  }
-
+// ----------------------- CLOUDINARY -----------------------
+if (window.cloudinary && uploadBox && browseBtn) {
   const widget = window.cloudinary.createUploadWidget(
     {
       cloudName: "dvcmr9ojz",
@@ -98,127 +55,108 @@ function initCloudinary() {
       folder: "products",
     },
     (err, result) => {
-      if (err) {
-        console.error("Cloudinary upload error:", err);
-      } else if (result && result.event === "success") {
+      if (!err && result.event === "success") {
         uploadedImageURL = result.info.secure_url;
         previewImg.src = uploadedImageURL;
         imagePreview.style.display = "block";
-        console.log("Uploaded Image URL:", uploadedImageURL);
       }
     }
   );
 
   uploadBox.addEventListener("click", () => widget.open());
+
+  browseBtn.addEventListener("click", (e) => {
+    e.preventDefault();     // stop form submit
+    e.stopPropagation();    // stop uploadBox click
+    widget.open();
+  });
 }
 
-let editProductId = null;
-
-// ----------------------- FORM SUBMISSION -----------------------
-function initProductForm() {
-  if (!productForm) return;
-
+// ----------------------- FORM SUBMIT -----------------------
+if (productForm) {
   productForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = productName.value.trim();
-    const cat = category.value.trim();
-    const priceValue = parseFloat(price.value);
-    const desc = description.value.trim();
-
-    if (!name || !cat || !desc || isNaN(priceValue) || priceValue < 0) {
-  alert("Please fill all fields correctly.");
-  return;
-}
-
-// If adding a new product (not editing), image is required
-if (!editProductId && !uploadedImageURL) {
-  alert("Please upload a product image.");
-  return;
-}
-
-try {
-  if (editProductId) {
-    // ---------------- UPDATE EXISTING PRODUCT ----------------
-    await setDoc(doc(db, "products", editProductId), {
-      name,
-      category: cat,
-      price: priceValue,
-      description: desc,
+    const payload = {
+      name: productName.value.trim(),
+      category: category.value.trim(),
+      price: Number(price.value),
+      description: description.value.trim(),
       imageURL: uploadedImageURL,
-      createdAt: serverTimestamp(),
-    });
+    };
 
-    alert("Product updated successfully!");
-    editProductId = null; // Reset edit state
-    productForm.querySelector(".submit-btn").textContent = "ADD PRODUCT"; // Back to add mode
-  } else {
-    // ---------------- ADD NEW PRODUCT ----------------
-    await addDoc(productsCollection, {
-      name,
-      category: cat,
-      price: priceValue,
-      description: desc,
-      imageURL: uploadedImageURL,
-      createdAt: serverTimestamp(),
-    });
+    if (!payload.name || !payload.category || !payload.description || isNaN(payload.price)) {
+      alert("Please fill all fields correctly.");
+      return;
+    }
 
-    alert("Product added successfully!");
-  }
+    if (!editProductId && !uploadedImageURL) {
+      alert("Please upload a product image.");
+      return;
+    }
 
-  // Reset form
-  productForm.reset();
-  previewImg.src = "";
-  imagePreview.style.display = "none";
-  uploadedImageURL = "";
+    try {
+      const res = await fetch(
+        editProductId ? `/api/products/${editProductId}` : "/api/products",
+        {
+          method: editProductId ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
-  // Reload table
-  loadProducts();
-} catch (err) {
-  console.error("Error saving product:", err);
-  alert("Failed to save product. Check console for details.");
+      if (!res.ok) throw new Error("Save failed");
+
+      alert(editProductId ? "Product updated successfully" : "Product added successfully");
+
+      editProductId = null;
+      uploadedImageURL = "";
+      imagePreview.style.display = "none";
+      productForm.reset();
+
+      loadProducts();
+    } catch (err) {
+      console.error(err);
+      alert("Error saving product");
+    }
+  });
 }
-});
-}
-// ----------------------- LOAD EXISTING PRODUCTS -----------------------
+
+// ----------------------- LOAD PRODUCTS -----------------------
 async function loadProducts() {
   if (!productsTbody) return;
-  productsTbody.innerHTML = ""; // Clear table
+
+  productsTbody.innerHTML = "";
 
   try {
-    const snapshot = await getDocs(productsCollection);
-    snapshot.forEach((docSnap) => {
-      const product = docSnap.data();
+    const res = await fetch("/api/products");
+    if (!res.ok) throw new Error("Failed to fetch");
+
+    const products = await res.json();
+
+    products.forEach((product) => {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td class="product-image-cell">
-          <div class="photo-box">
-            <img src="${product.imageURL}" alt="${product.name}">
-          </div>
-        </td>
+        <td><img src="${product.imageURL}" width="60"></td>
         <td>${product.name}</td>
         <td>${product.category}</td>
-        <td>Rs.${product.price}</td>
+        <td>Rs. ${product.price}</td>
         <td class="actions">
-          <button class="edit" data-id="${docSnap.id}"></button>
-          <button class="delete" data-id="${docSnap.id}"></button>
+          <button type="button" class="edit"></button>
+          <button type="button" class="delete"></button>
         </td>
       `;
 
-      // ---------------- DELETE ----------------
-      tr.querySelector(".delete").addEventListener("click", async () => {
-        if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
-          await deleteDoc(doc(db, "products", docSnap.id));
+      tr.querySelector(".delete").onclick = async () => {
+        if (confirm(`Delete "${product.name}"?`)) {
+          await fetch(`/api/products/${product._id}`, { method: "DELETE" });
           loadProducts();
         }
-      });
+      };
 
-      // ---------------- EDIT ----------------
-      tr.querySelector(".edit").addEventListener("click", () => {
-        editProductId = docSnap.id; // Track editing product
-
-        // Populate form fields
+      tr.querySelector(".edit").onclick = () => {
+        editProductId = product._id;
         productName.value = product.name;
         category.value = product.category;
         price.value = product.price;
@@ -226,28 +164,14 @@ async function loadProducts() {
         previewImg.src = product.imageURL;
         imagePreview.style.display = "block";
         uploadedImageURL = product.imageURL;
-
-        // Change button text
-        productForm.querySelector(".submit-btn").textContent = "UPDATE PRODUCT";
-
-        // Scroll to form (optional)
-        productForm.scrollIntoView({ behavior: "smooth" });
-      });
+      };
 
       productsTbody.appendChild(tr);
     });
   } catch (err) {
-    console.error("Error loading products:", err);
+    console.error("Failed to load products", err);
   }
 }
 
-// ----------------------- INITIALIZE -----------------------
-// admin-product-management.js
-export default function initAdminProductManagement() {
-  initAuth();
-  initDropdown();
-  highlightNav();
-  initCloudinary();
-  initProductForm();
-}
-
+// ----------------------- INITIAL LOAD -----------------------
+loadProducts();
