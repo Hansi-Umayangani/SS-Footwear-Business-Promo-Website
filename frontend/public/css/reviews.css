@@ -914,7 +914,9 @@ main {
     height: 15px;
   }
   .review-title { padding: 2rem 5% 2rem; }
-  .review-title h2 { font-size: 0.8rem; }
+  .review-title h2 {
+    font-size: clamp(1.5rem, 5vw, 1.9rem);
+  }
   .review-title p { font-size: 0.85rem; }
 
   .review-analysis-box { padding: 1rem; margin-top: 40px;}
