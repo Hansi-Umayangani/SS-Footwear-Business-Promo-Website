@@ -5,9 +5,10 @@ require("dotenv").config();
 
 const connectDB = require("./config/db");
 
-// Routes
+/* ---------------- Routes ---------------- */
 const reviewRoutes = require("./routes/reviewRoutes");
 const productRoutes = require("./routes/productRoutes");
+const customRequestRoutes = require("./routes/customRequestRoutes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 /* ---------------- API Routes ---------------- */
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/custom-requests", customRequestRoutes);
 
 /* ---------------- Server ---------------- */
 const PORT = process.env.PORT || 5000;
