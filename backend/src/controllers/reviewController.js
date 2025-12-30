@@ -61,3 +61,46 @@ exports.getReviews = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc   Get all reviews (Admin)
+ * @route  GET /api/admin/reviews
+ */
+exports.getAllReviewsAdmin = async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    res.status(200).json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch reviews" });
+  }
+};
+
+/**
+ * @desc   Update review (Admin edit)
+ * @route  PUT /api/admin/reviews/:id
+ */
+exports.updateReviewAdmin = async (req, res) => {
+  try {
+    const updated = await Review.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update review" });
+  }
+};
+
+/**
+ * @desc   Delete review (Admin)
+ * @route  DELETE /api/admin/reviews/:id
+ */
+exports.deleteReviewAdmin = async (req, res) => {
+  try {
+    await Review.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Review deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete review" });
+  }
+};
