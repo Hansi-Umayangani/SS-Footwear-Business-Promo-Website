@@ -4,7 +4,10 @@ const path = require("path");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
+
+// Routes
 const reviewRoutes = require("./routes/reviewRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 const app = express();
 
@@ -19,14 +22,16 @@ app.use(express.json());
 const frontendPath = path.join(__dirname, "../../frontend/public");
 app.use(express.static(frontendPath));
 
-/* ---------------- Routes ---------------- */
+/* ---------------- Default Route ---------------- */
 app.get("/", (req, res) => {
   res.sendFile(
     path.join(frontendPath, "pages/customer/home.html")
   );
 });
 
+/* ---------------- API Routes ---------------- */
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/products", productRoutes);
 
 /* ---------------- Server ---------------- */
 const PORT = process.env.PORT || 5000;
