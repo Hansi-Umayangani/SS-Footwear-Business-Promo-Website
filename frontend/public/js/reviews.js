@@ -1,0 +1,174 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const navLinks = document.querySelectorAll(".nav-links a");
+  const userMenu = document.getElementById("userMenu");
+  const userDropdown = document.getElementById("userDropdown");
+  const loginOption = document.getElementById("loginOption");
+  const logoutOption = document.getElementById("logoutOption");
+  const menuToggle = document.getElementById("menu-toggle");
+  const navMenu = document.getElementById("nav-menu");
+  const reviewsContainer = document.querySelector(".reviews-container");
+
+  // Review analysis elements
+  const overallRateEl = document.getElementById("overall-rate");
+  const overallStarsEl = document.getElementById("overall-stars");
+  const reviewsCountEl = document.getElementById("reviews-count");
+  const recommendationEl = document.getElementById("recommendation-percentage");
+
+  const barFills = {
+    5: document.getElementById("bar-5"),
+    4: document.getElementById("bar-4"),
+    3: document.getElementById("bar-3"),
+    2: document.getElementById("bar-2"),
+    1: document.getElementById("bar-1")
+  };
+
+  const barCounts = {
+    5: document.getElementById("count-5"),
+    4: document.getElementById("count-4"),
+    3: document.getElementById("count-3"),
+    2: document.getElementById("count-2"),
+    1: document.getElementById("count-1")
+  };
+
+  /* ---------------- Highlight active nav ---------------- */
+  const currentPage = window.location.pathname.split("/").pop();
+  navLinks.forEach(link => {
+    const linkPage = link.getAttribute("href").split("/").pop();
+    if (linkPage === currentPage) link.classList.add("active");
+  });
+
+  /* ---------------- User dropdown ---------------- */
+  if (userMenu && userDropdown) {
+    userMenu.addEventListener("click", () => {
+      userDropdown.style.display =
+        userDropdown.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userMenu.contains(e.target)) userDropdown.style.display = "none";
+    });
+  }
+
+  /* ---------------- Mobile menu toggle ---------------- */
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
+
+  /* ---------------- Time ago (MongoDB) ---------------- */
+  function timeAgo(dateString) {
+    if (!dateString) return "Just now";
+
+    const date = new Date(dateString);
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    const intervals = {
+      day: 86400,
+      hour: 3600,
+      minute: 60
+    };
+
+    if (seconds >= intervals.day)
+      return `${Math.floor(seconds / intervals.day)} day(s) ago`;
+    if (seconds >= intervals.hour)
+      return `${Math.floor(seconds / intervals.hour)} hour(s) ago`;
+    if (seconds >= intervals.minute)
+      return `${Math.floor(seconds / intervals.minute)} min(s) ago`;
+
+    return "Just now";
+  }
+
+  /* ---------------- Render stars ---------------- */
+  function renderStars(rating) {
+    let stars = "";
+    for (let i = 1; i <= 5; i++) {
+      stars += `<span class="star ${i <= rating ? "filled" : ""}">★</span>`;
+    }
+    return stars;
+  }
+
+  /* ---------------- Render review card ---------------- */
+  function renderReviewCard(review) {
+    return `
+      <article class="review-card">
+        <div class="review-header">
+          <div class="quote-icon">“</div>
+          <div class="reviewer-info">
+            <span class="reviewer-name">${review.name}</span>
+            <span class="product-name">${review.product || ""}</span>
+            <span class="review-time">${timeAgo(review.createdAt)}</span>
+          </div>
+          <div class="rating-stars">
+            ${renderStars(review.rating)}
+          </div>
+        </div>
+        <p class="review-text">${review.reviewText}</p><br>
+        ${
+          review.image
+            ? `<p class="review-image-link">
+                <a href="${review.image}" target="_blank" rel="noopener noreferrer"
+                   style="color:#8f4c00ff;text-decoration:underline;">
+                  View Image >>>
+                </a>
+              </p>`
+            : ""
+        }
+      </article>
+    `;
+  }
+
+  /* ---------------- Review analysis ---------------- */
+  function updateReviewAnalysis(reviews) {
+    if (!reviews.length) return;
+
+    let sum = 0;
+    const starCount = { 1:0,2:0,3:0,4:0,5:0 };
+
+    reviews.forEach(r => {
+      const rating = Math.min(Math.max(Number(r.rating),1),5);
+      sum += rating;
+      starCount[rating]++;
+    });
+
+    const avg = Number((sum / reviews.length).toFixed(1));
+    overallRateEl.textContent = avg;
+    reviewsCountEl.textContent = `Based on ${reviews.length} review${reviews.length > 1 ? "s" : ""}`;
+
+    const fullStars = Math.floor(avg);
+    const halfStar = avg - fullStars >= 0.5 ? 1 : 0;
+    overallStarsEl.textContent =
+      "★".repeat(fullStars) + (halfStar ? "½" : "") + "☆".repeat(5 - fullStars - halfStar);
+
+    const recommended = starCount[4] + starCount[5];
+    recommendationEl.textContent =
+      `${Math.round((recommended / reviews.length) * 100)}% Of Customers Recommend S&S Footwear`;
+
+    for (let i = 5; i >= 1; i--) {
+      const percent = ((starCount[i] / reviews.length) * 100).toFixed(0);
+      if (barFills[i]) barFills[i].style.width = `${percent}%`;
+      if (barCounts[i]) barCounts[i].textContent = starCount[i];
+    }
+  }
+
+  /* ---------------- Fetch reviews from MongoDB ---------------- */
+  async function loadReviews() {
+    try {
+      const res = await fetch("/api/reviews");
+      if (!res.ok) throw new Error("Failed to fetch reviews");
+
+      const reviews = await res.json();
+
+      reviewsContainer.innerHTML = "";
+      reviews.forEach(r => {
+        reviewsContainer.innerHTML += renderReviewCard(r);
+      });
+
+      updateReviewAnalysis(reviews);
+    } catch (err) {
+      console.error("Failed to load reviews:", err);
+    }
+  }
+
+  if (reviewsContainer) loadReviews();
+});

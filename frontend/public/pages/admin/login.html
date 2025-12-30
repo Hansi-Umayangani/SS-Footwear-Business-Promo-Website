@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S&S Footwear - Admin Login</title>
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="../../css/admin-login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Open+Sans&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Header -->
+<header class="navbar">
+    <div class="logo">
+        S&S FOOTWEAR
+        <img src="../../assets/images/Brand_Logo.png" alt="Brand Logo" class="brand-logo">
+    </div>
+
+<!-- Nav Links -->
+  <div class="nav-right">
+    <nav class="nav-links" id="nav-menu">
+        <a href="../customer/home.html">Home</a>
+        <a href="../customer/products.html">Products</a>
+        <a href="../customer/customization.html">Customization</a>
+        <a href="../customer/reviews.html">Reviews</a>
+        <a href="../customer/contact.html">Contact Us</a>
+    </nav>
+
+    <!-- User Icon -->
+    <div class="user-menu" id="userMenu">
+        <img src="../../assets/icons/Header-Footer_Icons/user.png" alt="User" class="user-icon">
+        <div class="dropdown" id="userDropdown">
+                <a href="#" id="loginOption">
+                    <img src="../../assets/icons/Header-Footer_Icons/log-in.png" alt="Login" class="login-icon"> LOGIN
+                </a>
+                <a href="#" id="logoutOption" style="display:none;">
+                    <img src="../../assets/icons/Header-Footer_Icons/log-in.png" alt="Logout" class="login-icon"> LOGOUT
+                </a>
+        </div>
+    </div>
+  </div>
+
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+</header>
+
+<!-- Main content -->
+  <main>
+        <!-- Login Form -->
+        <section class="login-section">
+        <div class="login-box">
+            <h2>Admin Login Portal</h2>
+            <form id="loginForm">
+            <label>Email</label>
+            <input type="email" id="adminEmail" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" id="adminPassword" placeholder="Enter your password" required>
+
+            <button type="submit" class="login-btn">LOGIN</button>
+            <p id="loginError" style="color:red;"></p>
+            </form>
+        </div>
+        </section>
+    </main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-content">
+
+    <!-- Brand/About -->
+    <div class="footer-about">
+      <div class="brand">
+        <h3>S&S FOOTWEARS</h3>
+        <img src="../../assets/images/Brand_Logo.png" alt="S&S Logo">
+      </div>
+      <p>
+        Crafted With Care, Worn With Pride.<br>
+        Your Journey Matters To Us.<br>
+        We are Honored To Be Part Of Your Walk.
+      </p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-links">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../customer/home.html">Home</a></li>
+        <li><a href="../customer/products.html">Products</a></li>
+        <li><a href="../customer/customization.html">Customization</a></li>
+        <li><a href="../customer/reviews.html">Reviews</a></li>
+        <li><a href="../customer/contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="contact-info">
+      <h4>Contact Info</h4>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/phone.png" alt="Phone" class="contact-icon">
+        <a href="tel:0753755005">0753755005</a>
+      </p>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/mail.png" alt="Email" class="contact-icon">
+        <a href="mailto:ss01.footwear@gmail.com">ss01.footwear@gmail.com</a>
+      </p>
+      <p>
+        <img src="../../assets/icons/Header-Footer_Icons/location.png" alt="Location" class="contact-icon">
+        <a href="https://maps.app.goo.gl/aLB4kqipQs7XuvLc8/" target="_blank">
+        S&S Shoes,<br>
+        No.14, Madolompitiya Road,<br>
+        Pallewela.
+        </a>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    © 2025 S&S Footwear. All Rights Reserved.
+  </div>
+</footer>
+
+<script type="module" src="../../js/admin-login.js"></script>
+
+</body>
+</html>
