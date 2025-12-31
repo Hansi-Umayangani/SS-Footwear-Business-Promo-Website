@@ -125,12 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
-        alert("✅ Review submitted successfully!");
+        alert("Review submitted successfully!");
         window.location.href = "/pages/customer/reviews.html";
 
       } catch (err) {
         console.error(err);
-        alert("❌ Failed to submit review.");
+        alert("Failed to submit review.");
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = "ADD REVIEW";
