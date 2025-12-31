@@ -16,6 +16,25 @@ const imagePreview = document.getElementById("image-preview");
 const uploadBox = document.getElementById("upload-box");
 const browseBtn = document.getElementById("browse-btn");
 
+// ------------------- ADMIN NAV HIGHLIGHT -------------------
+const btnProducts = document.getElementById("btn-products");
+const btnReviews = document.getElementById("btn-reviews");
+const btnCustomization = document.getElementById("btn-customization");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const url = window.location.href;
+
+  if (url.includes("product-management.html") && btnProducts) {
+    btnProducts.classList.add("active");
+  }
+  if (url.includes("review-management.html") && btnReviews) {
+    btnReviews.classList.add("active");
+  }
+  if (url.includes("customization-management.html") && btnCustomization) {
+    btnCustomization.classList.add("active");
+  }
+});
+
 let uploadedImageURL = "";
 let editProductId = null;
 
