@@ -1,4 +1,5 @@
 // ------------------- DOM ELEMENTS -------------------
+const logoutOption = document.getElementById("logoutOption");
 const requestsTableBody = document.getElementById("requestsTableBody");
 
 // Admin nav buttons
@@ -24,6 +25,38 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchCustomizationRequests();
   }
 });
+
+// ------------------- USER DROPDOWN -------------------
+const userMenu = document.getElementById("userMenu");
+const userDropdown = document.getElementById("userDropdown");
+
+if (userMenu && userDropdown) {
+  userMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userDropdown.style.display =
+      userDropdown.style.display === "block" ? "none" : "block";
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!userMenu.contains(e.target)) {
+      userDropdown.style.display = "none";
+    }
+  });
+}
+
+// ------------------- LOGOUT -------------------
+if (logoutOption) {
+  logoutOption.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Remove admin login state
+    localStorage.removeItem("adminToken");
+
+    // Redirect to admin login page
+    window.location.href = "login.html";
+  });
+}
+
 
 // ------------------- FETCH CUSTOMIZATION REQUESTS -------------------
 async function fetchCustomizationRequests() {
