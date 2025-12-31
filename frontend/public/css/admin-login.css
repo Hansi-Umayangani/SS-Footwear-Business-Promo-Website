@@ -117,6 +117,13 @@ img {
   width: 30px;
 }
 
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 .user-menu .dropdown {
   display: none;
   position: absolute;
@@ -126,9 +133,14 @@ img {
   border: 1px solid #d2a06a;
   border-radius: 5px;
   padding: 10px;
-  min-width: 120px;
-  z-index: 10;
+  min-width: 140px;
+  z-index: 9999;
 }
+
+.user-menu .dropdown.show {
+  display: block;
+}
+
 
 .user-menu .dropdown a {
   display: flex;
