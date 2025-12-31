@@ -9,6 +9,7 @@ const connectDB = require("./config/db");
 const reviewRoutes = require("./routes/reviewRoutes");
 const productRoutes = require("./routes/productRoutes");
 const customRequestRoutes = require("./routes/customRequestRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/custom-requests", customRequestRoutes);
+app.use("/api/admin", adminRoutes);
 
 /* ---------------- Server ---------------- */
 const PORT = process.env.PORT || 5000;
