@@ -31,6 +31,54 @@ const reviewsTableBody = document.getElementById("reviewsTableBody");
 let uploadedImageURL = "";
 let editingReviewId = null;
 
+// ====================== USER DROPDOWN & AUTH ======================
+const userMenu = document.getElementById("userMenu");
+const userDropdown = document.getElementById("userDropdown");
+const loginOption = document.getElementById("loginOption");
+const logoutOption = document.getElementById("logoutOption");
+
+// Toggle dropdown
+if (userMenu && userDropdown) {
+  userMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userDropdown.classList.toggle("show");
+  });
+
+  userDropdown.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
+  document.addEventListener("click", () => {
+    userDropdown.classList.remove("show");
+  });
+}
+
+// Check admin login state (JWT)
+function checkAdminAuth() {
+  const token = localStorage.getItem("adminToken");
+
+  if (!loginOption || !logoutOption) return;
+
+  if (token) {
+    loginOption.style.display = "none";
+    logoutOption.style.display = "flex";
+  } else {
+    loginOption.style.display = "flex";
+    logoutOption.style.display = "none";
+  }
+}
+
+checkAdminAuth();
+
+// Logout
+if (logoutOption) {
+  logoutOption.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem("adminToken");
+    window.location.href = "login.html";
+  });
+}
+
 // ====================== CLOUDINARY UPLOAD ======================
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dvcmr9ojz/image/upload";
 const CLOUDINARY_UPLOAD_PRESET = "unsigned_preset";
