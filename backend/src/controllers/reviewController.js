@@ -1,9 +1,6 @@
-const Review = require("../models/Review");
+const { pool } = require("../config/db");
 
-/**
- * @desc   Add a new review
- * @route  POST /api/reviews
- */
+/* ---------------- ADD review ---------------- */
 exports.addReview = async (req, res) => {
   try {
     const {
@@ -11,96 +8,160 @@ exports.addReview = async (req, res) => {
       email,
       product,
       rating,
-      reviewText,
-      image
+      review,
+      image_url
     } = req.body;
 
-    if (!name || !email || !product || !rating || !reviewText) {
+    // ✅ STRONG VALIDATION
+    if (
+      !name ||
+      !email ||
+      !product ||
+      rating === undefined ||
+      rating === null ||
+      Number.isNaN(Number(rating)) ||
+      Number(rating) < 1 ||
+      Number(rating) > 5 ||
+      !review
+    ) {
       return res.status(400).json({
-        success: false,
-        message: "Missing required fields"
+        message: "Missing or invalid fields"
       });
     }
 
-    const review = await Review.create({
-      name,
-      email,
-      product,
-      rating,
-      reviewText,
-      image
-    });
+    const result = await pool.query(
+      `
+      INSERT INTO reviews (name, email, product, rating, review_text, image_url)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+      `,
+      [
+        name,
+        email,
+        product,
+        Number(rating),
+        review,
+        image_url || null
+      ]
+    );
 
     res.status(201).json({
       success: true,
-      review
+      review: result.rows[0]
     });
+
   } catch (error) {
     console.error("Add review error:", error);
     res.status(500).json({
-      success: false,
       message: "Server error while adding review"
     });
   }
 };
 
-/**
- * @desc   Get all reviews (latest first)
- * @route  GET /api/reviews
- */
+/* ---------------- GET reviews (public) ---------------- */
 exports.getReviews = async (req, res) => {
   try {
-    const reviews = await Review.find()
-      .sort({ createdAt: -1 });
-
-    res.status(200).json(reviews);
+    const result = await pool.query(
+      "SELECT * FROM reviews ORDER BY created_at DESC"
+    );
+    res.status(200).json(result.rows);
   } catch (error) {
     console.error("Fetch reviews error:", error);
-    res.status(500).json({
-      message: "Server error while fetching reviews"
-    });
+    res.status(500).json({ message: "Server error while fetching reviews" });
   }
 };
 
-/**
- * @desc   Get all reviews (Admin)
- * @route  GET /api/admin/reviews
- */
+/* ---------------- GET reviews (admin) ---------------- */
 exports.getAllReviewsAdmin = async (req, res) => {
   try {
-    const reviews = await Review.find().sort({ createdAt: -1 });
-    res.status(200).json(reviews);
+    const result = await pool.query(
+      "SELECT * FROM reviews ORDER BY created_at DESC"
+    );
+    res.status(200).json(result.rows);
   } catch (error) {
+    console.error("Admin fetch reviews error:", error);
     res.status(500).json({ message: "Failed to fetch reviews" });
   }
 };
 
-/**
- * @desc   Update review (Admin edit)
- * @route  PUT /api/admin/reviews/:id
- */
+/* ---------------- UPDATE review (admin) ---------------- */
 exports.updateReviewAdmin = async (req, res) => {
   try {
-    const updated = await Review.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
+    const { rating, review_text, product } = req.body;
+
+    // Fetch existing review
+    const existing = await pool.query(
+      "SELECT product, review_text FROM reviews WHERE id = $1",
+      [req.params.id]
     );
-    res.status(200).json(updated);
+
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    const existingProduct = existing.rows[0].product;
+    const existingText = existing.rows[0].review_text;
+
+    // 🔁 SAFE FALLBACKS
+    const finalProduct =
+      product && product.trim() !== ""
+        ? product.trim()
+        : existingProduct;
+
+    const finalReviewText =
+      review_text && review_text.trim() !== ""
+        ? review_text.trim()
+        : existingText;
+
+    // HARD STOP
+    if (!finalProduct || !finalReviewText) {
+      return res.status(400).json({
+        message: "Product and review text cannot be empty"
+      });
+    }
+
+    // Validate rating
+    if (
+      rating === undefined ||
+      Number.isNaN(Number(rating)) ||
+      Number(rating) < 1 ||
+      Number(rating) > 5
+    ) {
+      return res.status(400).json({ message: "Invalid rating" });
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE reviews
+      SET product = $1,
+          rating = $2,
+          review_text = $3,
+          updated_at = NOW()
+      WHERE id = $4
+      RETURNING *
+      `,
+      [finalProduct, Number(rating), finalReviewText, req.params.id]
+    );
+
+    res.status(200).json(result.rows[0]);
+
   } catch (error) {
+    console.error("Update review error:", error);
     res.status(500).json({ message: "Failed to update review" });
   }
 };
 
-/**
- * @desc   Delete review (Admin)
- * @route  DELETE /api/admin/reviews/:id
- */
+/* ---------------- DELETE review (admin) ---------------- */
 exports.deleteReviewAdmin = async (req, res) => {
   try {
-    await Review.findByIdAndDelete(req.params.id);
+    await pool.query(
+      "DELETE FROM reviews WHERE id = $1",
+      [req.params.id]
+    );
+
     res.status(200).json({ message: "Review deleted" });
   } catch (error) {
+    console.error("Delete review error:", error);
     res.status(500).json({ message: "Failed to delete review" });
   }
 };
