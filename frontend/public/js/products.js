@@ -32,30 +32,26 @@ function normalizeText(text = "") {
 }
 
 // ------------------- DISPLAY PRODUCTS -------------------
-function displayProducts(products, overrideCategories = null) {
+function displayProducts(products) {
   const productGrid = document.getElementById("product-grid");
   if (!productGrid) return;
 
   productGrid.innerHTML = "";
 
   const filteredProducts = products.filter((p) => {
-    const targetCategory = overrideCategories || [categoryMap[currentFilter]];
+    const targetCategory = [categoryMap[currentFilter]];
 
-    const matchesCategory = targetCategory.includes("all")
-      ? true
-      : targetCategory.some(
-          (cat) => normalizeText(cat) === normalizeText(p.category)
-        );
+    const matchesCategory =
+      targetCategory.includes("all") ||
+      normalizeText(p.category) === normalizeText(targetCategory[0]);
+
+    const searchText = normalizeText(currentSearch);
 
     const matchesSearch =
-      normalizeText(p.name).includes(normalizeText(currentSearch)) ||
-      (searchMap[currentSearch] &&
-        (Array.isArray(searchMap[currentSearch])
-          ? searchMap[currentSearch].some(
-              (cat) => normalizeText(cat) === normalizeText(p.category)
-            )
-          : normalizeText(searchMap[currentSearch]) ===
-            normalizeText(p.category)));
+      !searchText ||
+      normalizeText(p.name).includes(searchText) ||
+      normalizeText(p.description).includes(searchText) ||
+      normalizeText(p.category).includes(searchText);
 
     return matchesCategory && matchesSearch;
   });
@@ -70,7 +66,7 @@ function displayProducts(products, overrideCategories = null) {
     card.classList.add("product-card");
 
     card.innerHTML = `
-      <img src="${product.imageURL}" alt="${product.name}" />
+      <img src="${product.image_url}" alt="${product.name}" />
       <h3>${product.name}</h3>
       <p>${product.description}</p>
       <div class="price">Rs. ${Number(product.price).toFixed(2)}</div>
@@ -104,20 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // -------- SEARCH (ENTER KEY) --------
   if (searchInput) {
-    searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-
-        currentSearch = normalizeText(searchInput.value.trim());
-
-        let overrideCategories = null;
-        if (searchMap[currentSearch]) {
-          const mapped = searchMap[currentSearch];
-          overrideCategories = Array.isArray(mapped) ? mapped : [mapped];
-        }
-
-        displayProducts(allProducts, overrideCategories);
-      }
+    searchInput.addEventListener("input", () => {
+      currentSearch = searchInput.value.trim();
+      displayProducts(allProducts);
     });
   }
 
@@ -138,4 +123,4 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProducts();
 });
 
-console.log("✅ products.js loaded (API version)");
+console.log("products.js loaded (API version)");
