@@ -1,13 +1,23 @@
-const mongoose = require("mongoose");
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/ss_footwear");
-    console.log("MongoDB connected successfully");
+    await pool.query("SELECT 1");
+    console.log("Neon PostgreSQL connected successfully");
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
+    console.error("PostgreSQL connection failed:", error.message);
     process.exit(1);
   }
 };
 
-module.exports = connectDB;
+module.exports = {
+  pool,
+  connectDB
+};
