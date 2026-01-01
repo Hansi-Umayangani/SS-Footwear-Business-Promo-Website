@@ -1,34 +1,25 @@
-const mongoose = require("mongoose");
+const pool = require("../config/db");
 
-const productSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    category: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    price: {
-      type: Number,
-      required: true,
-      min: 0
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    imageURL: {
-      type: String,
-      required: true
-    }
+const Product = {
+  getAll: async () => {
+    const result = await pool.query(
+      "SELECT * FROM products ORDER BY created_at DESC"
+    );
+    return result.rows;
   },
-  {
-    timestamps: true
-  }
-);
 
-module.exports = mongoose.model("Product", productSchema);
+  create: async (data) => {
+    const { name, category, price, description, imageURL } = data;
+
+    const result = await pool.query(
+      `INSERT INTO products (name, category, price, description, image_url)
+       VALUES ($1,$2,$3,$4,$5)
+       RETURNING *`,
+      [name, category, price, description, imageURL]
+    );
+
+    return result.rows[0];
+  }
+};
+
+module.exports = Product;
