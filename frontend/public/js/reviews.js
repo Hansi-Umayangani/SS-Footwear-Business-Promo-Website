@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ===============================
+     NAV & USER MENU ELEMENTS
+     =============================== */
   const navLinks = document.querySelectorAll(".nav-links a");
   const userMenu = document.getElementById("userMenu");
   const userDropdown = document.getElementById("userDropdown");
@@ -6,9 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutOption = document.getElementById("logoutOption");
   const menuToggle = document.getElementById("menu-toggle");
   const navMenu = document.getElementById("nav-menu");
+
+  /* ===============================
+     REVIEW ELEMENTS
+     =============================== */
   const reviewsContainer = document.querySelector(".reviews-container");
 
-  // Review analysis elements
   const overallRateEl = document.getElementById("overall-rate");
   const overallStarsEl = document.getElementById("overall-stars");
   const reviewsCountEl = document.getElementById("reviews-count");
@@ -30,56 +36,57 @@ document.addEventListener("DOMContentLoaded", () => {
     1: document.getElementById("count-1")
   };
 
-  /* ---------------- Highlight active nav ---------------- */
+  /* ===============================
+     ACTIVE NAV LINK
+     =============================== */
   const currentPage = window.location.pathname.split("/").pop();
   navLinks.forEach(link => {
     const linkPage = link.getAttribute("href").split("/").pop();
     if (linkPage === currentPage) link.classList.add("active");
   });
 
-  /* ---------------- User dropdown ---------------- */
+  /* ===============================
+     USER DROPDOWN
+     =============================== */
   if (userMenu && userDropdown) {
-    userMenu.addEventListener("click", () => {
-      userDropdown.style.display =
-        userDropdown.style.display === "block" ? "none" : "block";
+    userMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle("show");
     });
 
-    document.addEventListener("click", (e) => {
-      if (!userMenu.contains(e.target)) userDropdown.style.display = "none";
+    document.addEventListener("click", () => {
+      userDropdown.classList.remove("show");
     });
   }
 
-  /* ---------------- Mobile menu toggle ---------------- */
+  /* ===============================
+     MOBILE MENU
+     =============================== */
   if (menuToggle && navMenu) {
     menuToggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
     });
   }
 
-  /* ---------------- Time ago (MongoDB) ---------------- */
+  /* ===============================
+     TIME AGO (PostgreSQL timestamps)
+     =============================== */
   function timeAgo(dateString) {
     if (!dateString) return "Just now";
 
     const date = new Date(dateString);
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
-    const intervals = {
-      day: 86400,
-      hour: 3600,
-      minute: 60
-    };
-
-    if (seconds >= intervals.day)
-      return `${Math.floor(seconds / intervals.day)} day(s) ago`;
-    if (seconds >= intervals.hour)
-      return `${Math.floor(seconds / intervals.hour)} hour(s) ago`;
-    if (seconds >= intervals.minute)
-      return `${Math.floor(seconds / intervals.minute)} min(s) ago`;
+    if (seconds >= 86400) return `${Math.floor(seconds / 86400)} day(s) ago`;
+    if (seconds >= 3600) return `${Math.floor(seconds / 3600)} hour(s) ago`;
+    if (seconds >= 60) return `${Math.floor(seconds / 60)} min(s) ago`;
 
     return "Just now";
   }
 
-  /* ---------------- Render stars ---------------- */
+  /* ===============================
+     STAR RENDERING
+     =============================== */
   function renderStars(rating) {
     let stars = "";
     for (let i = 1; i <= 5; i++) {
@@ -88,7 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return stars;
   }
 
-  /* ---------------- Render review card ---------------- */
+  /* ===============================
+     REVIEW CARD
+     =============================== */
   function renderReviewCard(review) {
     return `
       <article class="review-card">
@@ -97,19 +106,21 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="reviewer-info">
             <span class="reviewer-name">${review.name}</span>
             <span class="product-name">${review.product || ""}</span>
-            <span class="review-time">${timeAgo(review.createdAt)}</span>
+            <span class="review-time">${timeAgo(review.created_at)}</span>
           </div>
           <div class="rating-stars">
             ${renderStars(review.rating)}
           </div>
         </div>
-        <p class="review-text">${review.reviewText}</p><br>
+
+        <p class="review-text">${review.review_text}</p>
+
         ${
           review.image
             ? `<p class="review-image-link">
-                <a href="${review.image}" target="_blank" rel="noopener noreferrer"
+                <a href="${review.image_url}" target="_blank" rel="noopener noreferrer"
                    style="color:#8f4c00ff;text-decoration:underline;">
-                  View Image >>>
+                  View Image &gt;&gt;&gt;
                 </a>
               </p>`
             : ""
@@ -118,27 +129,33 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  /* ---------------- Review analysis ---------------- */
+  /* ===============================
+     REVIEW ANALYTICS
+     =============================== */
   function updateReviewAnalysis(reviews) {
     if (!reviews.length) return;
 
     let sum = 0;
-    const starCount = { 1:0,2:0,3:0,4:0,5:0 };
+    const starCount = { 1:0, 2:0, 3:0, 4:0, 5:0 };
 
     reviews.forEach(r => {
-      const rating = Math.min(Math.max(Number(r.rating),1),5);
+      const rating = Math.min(Math.max(Number(r.rating), 1), 5);
       sum += rating;
       starCount[rating]++;
     });
 
     const avg = Number((sum / reviews.length).toFixed(1));
     overallRateEl.textContent = avg;
-    reviewsCountEl.textContent = `Based on ${reviews.length} review${reviews.length > 1 ? "s" : ""}`;
+    reviewsCountEl.textContent =
+      `Based on ${reviews.length} review${reviews.length > 1 ? "s" : ""}`;
 
     const fullStars = Math.floor(avg);
     const halfStar = avg - fullStars >= 0.5 ? 1 : 0;
+
     overallStarsEl.textContent =
-      "★".repeat(fullStars) + (halfStar ? "½" : "") + "☆".repeat(5 - fullStars - halfStar);
+      "★".repeat(fullStars) +
+      (halfStar ? "½" : "") +
+      "☆".repeat(5 - fullStars - halfStar);
 
     const recommended = starCount[4] + starCount[5];
     recommendationEl.textContent =
@@ -151,7 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ---------------- Fetch reviews from MongoDB ---------------- */
+  /* ===============================
+     FETCH REVIEWS (API)
+     =============================== */
   async function loadReviews() {
     try {
       const res = await fetch("/api/reviews");
