@@ -118,26 +118,19 @@
 </footer>
 
 <script src="/js/header.js"></script>
-
 <script type="module" src="/js/products.js"></script>
-<script type="module" src="/js/admin-product-management.js"></script>
 
 <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 
-<script type="module">
-import { auth } from "/js/firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const adminLink = document.getElementById("admin-link");
+    const adminToken = localStorage.getItem("adminToken");
 
-const ADMIN_EMAILS = [
-  "gimhanihansika2020@gmail.com",
-  "ss01.footwear@gmail.com"
-];
-
-onAuthStateChanged(auth, (user) => {
-  if (user && ADMIN_EMAILS.includes(user.email)) {
-    document.getElementById("admin-link").style.display = "inline";
-  }
-});
+    if (adminToken && adminLink) {
+      adminLink.style.display = "inline";
+    }
+  });
 </script>
 
 </body>
