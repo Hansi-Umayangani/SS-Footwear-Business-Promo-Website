@@ -1,44 +1,26 @@
-const mongoose = require("mongoose");
+const pool = require("../config/db");
 
-const reviewSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    email: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    product: {
-      type: String,
-      required: true,
-      trim: true
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5
-    },
-    reviewText: {
-      type: String,
-      required: true
-    },
-    image: {
-      type: String,
-      default: ""
-    },
-    isApproved: {
-      type: Boolean,
-      default: false   // admin approval flag
-    }
+const Review = {
+  getApproved: async () => {
+    const result = await pool.query(
+      "SELECT * FROM reviews WHERE is_approved = true ORDER BY created_at DESC"
+    );
+    return result.rows;
   },
-  {
-    timestamps: true // creates createdAt & updatedAt
-  }
-);
 
-module.exports = mongoose.model("Review", reviewSchema);
+  create: async (data) => {
+    const { name, email, product, rating, reviewText, image_url } = data;
+
+    const result = await pool.query(
+      `INSERT INTO reviews
+      (name, email, product, rating, review_text, image_url)
+      VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING *`,
+      [name, email, product, rating, reviewText, image_url]
+    );
+
+    return result.rows[0];
+  }
+};
+
+module.exports = Review;
