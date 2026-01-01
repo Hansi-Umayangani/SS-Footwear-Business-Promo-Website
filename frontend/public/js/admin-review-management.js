@@ -5,9 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCustomization = document.getElementById("btnCustomization");
 
   const url = window.location.href;
-  if (url.includes("product-management.html")) btnProducts.classList.add("active");
-  else if (url.includes("review-management.html")) btnReviews.classList.add("active");
-  else if (url.includes("customization-management.html")) btnCustomization.classList.add("active");
+  if (url.includes("product-management.html")) btnProducts?.classList.add("active");
+  else if (url.includes("review-management.html")) btnReviews?.classList.add("active");
+  else if (url.includes("customization-management.html")) btnCustomization?.classList.add("active");
 
   loadReviews();
 });
@@ -44,16 +44,12 @@ if (userMenu && userDropdown) {
     userDropdown.classList.toggle("show");
   });
 
-  userDropdown.addEventListener("click", (e) => {
-    e.stopPropagation();
-  });
-
   document.addEventListener("click", () => {
     userDropdown.classList.remove("show");
   });
 }
 
-// Check admin login state (JWT)
+// Admin auth (localStorage)
 function checkAdminAuth() {
   const token = localStorage.getItem("adminToken");
 
@@ -70,7 +66,6 @@ function checkAdminAuth() {
 
 checkAdminAuth();
 
-// Logout
 if (logoutOption) {
   logoutOption.addEventListener("click", (e) => {
     e.preventDefault();
@@ -93,7 +88,9 @@ uploadBox.addEventListener("dragover", (e) => {
   e.preventDefault();
   uploadBox.classList.add("dragging");
 });
+
 uploadBox.addEventListener("dragleave", () => uploadBox.classList.remove("dragging"));
+
 uploadBox.addEventListener("drop", (e) => {
   e.preventDefault();
   uploadBox.classList.remove("dragging");
@@ -136,17 +133,15 @@ async function loadReviews() {
       <td>${review.name}</td>
       <td class="rating-stars">${stars}</td>
       <td>${review.product}</td>
-      <td class="review-comment">${review.reviewText}</td>
-      <td>${new Date(review.createdAt).toLocaleString()}</td>
+      <td class="review-comment">${review.review_text}</td>
+      <td>${new Date(review.created_at).toLocaleString()}</td>
 
       <td class="review-image-cell">
         ${
-          review.image
-            ? `
-              <button type="button" class="view-image-btn">
-                <img src="/assets/icons/image.png" alt="View image">
-              </button>
-            `
+          review.image_url
+            ? `<button type="button" class="view-image-btn">
+                 <img src="/assets/icons/image.png" alt="View image">
+               </button>`
             : "No Image"
         }
       </td>
@@ -157,14 +152,14 @@ async function loadReviews() {
       </td>
     `;
 
-    if (review.image) {
+    if (review.image_url) {
       tr.querySelector(".view-image-btn").onclick = () => {
-        window.open(review.image, "_blank");
+        window.open(review.image_url, "_blank");
       };
     }
 
     tr.querySelector(".edit").onclick = () => fillFormForEdit(review);
-    tr.querySelector(".delete").onclick = () => deleteReview(review._id);
+    tr.querySelector(".delete").onclick = () => deleteReview(review.id);
 
     reviewsTableBody.appendChild(tr);
   });
@@ -175,15 +170,15 @@ function fillFormForEdit(review) {
   reviewerNameInput.value = review.name;
   productInput.value = review.product;
   ratingInput.value = review.rating;
-  reviewTextInput.value = review.reviewText;
+  reviewTextInput.value = review.review_text;
 
-  uploadedImageURL = review.image || "";
+  uploadedImageURL = review.image_url || "";
   if (uploadedImageURL) {
     previewImg.src = uploadedImageURL;
     imagePreview.style.display = "block";
   }
 
-  editingReviewId = review._id;
+  editingReviewId = review.id;
   submitBtn.textContent = "UPDATE REVIEW";
   reviewForm.scrollIntoView({ behavior: "smooth" });
 }
@@ -196,23 +191,43 @@ async function deleteReview(id) {
   loadReviews();
 }
 
-// ====================== ADD / UPDATE REVIEW ======================
-reviewForm.addEventListener("submit", async (e) => {
+  // ====================== ADD / UPDATE REVIEW ======================
+  reviewForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const payload = {
-    name: reviewerNameInput.value.trim(),
-    product: productInput.value.trim(),
-    rating: Number(ratingInput.value),
-    reviewText: reviewTextInput.value.trim(),
-    image: uploadedImageURL
-  };
+  let payload;
+  let url;
+  let method;
 
-  const url = editingReviewId
-    ? `/api/reviews/admin/${editingReviewId}`
-    : "/api/reviews";
+  if (editingReviewId) {
+    const reviewText = reviewTextInput.value.trim();
+    if (!reviewText) {
+      alert("Review text cannot be empty");
+      return;
+    }
 
-  const method = editingReviewId ? "PUT" : "POST";
+    payload = {
+      rating: Number(ratingInput.value),
+      review_text: reviewText,
+      product: productInput.value.trim()
+    };
+
+    url = `/api/reviews/admin/${editingReviewId}`;
+    method = "PUT";
+
+  } else {
+    payload = {
+      name: reviewerNameInput.value.trim(),
+      email: reviewerEmailInput.value.trim(), // if required
+      product: productInput.value.trim(),
+      rating: Number(ratingInput.value),
+      review: reviewTextInput.value.trim(),
+      image_url: uploadedImageURL
+    };
+
+    url = "/api/reviews";
+    method = "POST";
+  }
 
   await fetch(url, {
     method,
@@ -228,3 +243,4 @@ reviewForm.addEventListener("submit", async (e) => {
 
   loadReviews();
 });
+
