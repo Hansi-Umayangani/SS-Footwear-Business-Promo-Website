@@ -1,14 +1,13 @@
-// ---------------------- DOM ELEMENTS ----------------------
 document.addEventListener("DOMContentLoaded", () => {
+  /* ---------------- DOM ELEMENTS ---------------- */
   const navLinks = document.querySelectorAll(".nav-links a");
   const menuToggle = document.getElementById("menu-toggle");
   const navMenu = document.getElementById("nav-menu");
   const customForm = document.getElementById("customRequestForm");
 
-  const currentPage = window.location.pathname.split("/").pop();
-
   /* ---------------- Highlight active nav link ---------------- */
-  navLinks.forEach((link) => {
+  const currentPage = window.location.pathname.split("/").pop();
+  navLinks.forEach(link => {
     const linkPage = link.getAttribute("href").split("/").pop();
     if (linkPage === currentPage) link.classList.add("active");
   });
@@ -20,49 +19,74 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------------- Customization Form Submission ---------------- */
+  /* ---------------- Custom Request Form ---------------- */
   if (!customForm) return;
 
   customForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const data = {
-      customerName: document.getElementById("customerName").value.trim(),
-      contactNumber: document.getElementById("contactNumber").value.trim(),
-      emailAddress: document.getElementById("emailAddress").value.trim(),
-      productType: document.getElementById("productType").value.trim(),
-      customDetails: document.getElementById("customDetails").value.trim(),
-      contactMethod: document.querySelector(
-        'input[name="contactMethod"]:checked'
-      )?.value
+    /* ---- Get inputs SAFELY by ID ---- */
+    const customerName   = document.getElementById("customer_name");
+    const contactNumber  = document.getElementById("contact_number");
+    const emailAddress   = document.getElementById("email_address");
+    const productType    = document.getElementById("product_type");
+    const customDetails  = document.getElementById("custom_details");
+
+    const contactMethod = document.querySelector(
+      "input[name='contact_method']:checked"
+    )?.value;
+
+    /* ---- Safety check ---- */
+    if (!customerName || !contactNumber || !emailAddress) {
+      console.error("Form elements not found");
+      return;
+    }
+
+    /* ---- Payload (MATCHES BACKEND) ---- */
+    const payload = {
+      customerName: customerName.value.trim(),
+      contactNumber: contactNumber.value.trim(),
+      emailAddress: emailAddress.value.trim(),
+      productType: productType?.value.trim() || null,
+      customDetails: customDetails?.value.trim() || null,
+      contactMethod: contactMethod
     };
 
-    // Basic validation
+    /* ---------------- Validation ---------------- */
     if (
-      !data.customerName ||
-      !data.contactNumber ||
-      !data.emailAddress ||
-      !data.contactMethod
+      !payload.customerName ||
+      !payload.contactNumber ||
+      !payload.emailAddress ||
+      !payload.contactMethod
     ) {
       alert("Please fill all required fields.");
       return;
     }
 
+    if (!/^\+?\d{9,15}$/.test(payload.contactNumber)) {
+      alert("Please enter a valid contact number.");
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(payload.emailAddress)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    /* ---------------- Submit to API ---------------- */
     try {
-      const response = await fetch("/api/custom-requests", {
+      const res = await fetch("/api/custom-requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit request");
-      }
+      if (!res.ok) throw new Error("Submission failed");
 
       alert("Your customization request has been submitted successfully!");
       customForm.reset();
-    } catch (error) {
-      console.error("Submission error:", error);
+    } catch (err) {
+      console.error("Customization request error:", err);
       alert("Something went wrong. Please try again later.");
     }
   });
