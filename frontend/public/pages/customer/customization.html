@@ -10,76 +10,115 @@
 </head>
 <body>
 
-<main>
-  <!-- Header -->
-  <header class="navbar">
-    <div class="logo">
-      S&S  FOOTWEAR
-      <img src="/assets/images/Brand_Logo.png" alt="Brand_Logo" class="brand-logo"></div>
-        
-      <nav class="nav-links" id="nav-menu">
-        <a href="/pages/customer/home.html">Home</a>
-        <a href="/pages/customer/products.html">Products</a>
-        <a href="/pages/customer/customization.html">Customization</a>
-        <a href="/pages/customer/reviews.html">Reviews</a>
-        <a href="/pages/customer/contact.html">Contact Us</a>
-    </nav>
-    <div class="menu-toggle" id="menu-toggle">☰</div>
-  </header>
+<!-- Header -->
+<header class="navbar">
+  <div class="logo">
+    S&S FOOTWEAR
+    <img src="/assets/images/Brand_Logo.png" alt="Brand Logo" class="brand-logo">
+  </div>
+
+  <nav class="nav-links" id="nav-menu">
+    <a href="/pages/customer/home.html">Home</a>
+    <a href="/pages/customer/products.html">Products</a>
+    <a href="/pages/customer/customization.html">Customization</a>
+    <a href="/pages/customer/reviews.html">Reviews</a>
+    <a href="/pages/customer/contact.html">Contact Us</a>
+  </nav>
+
+  <div class="menu-toggle" id="menu-toggle">☰</div>
+</header>
 
 <!-- Heading -->
 <section class="custom-request-page">
   <h2>Custom Footwear Request</h2>
   <p>
-    Have a specific design in mind? <br> We’d love to bring your vision to life. <br><br> 
+    Have a specific design in mind? <br>
+    We’d love to bring your vision to life. <br><br>
     Fill out the form below and our team will contact you to discuss your custom footwear requirements.
   </p>
 </section>
 
 <!-- Main Container -->
 <main class="custom-container">
-  
-  <!-- Left Form Section -->
+
+  <!-- Form Section -->
   <section class="form-card">
     <h2>Customization Request Form</h2>
+
     <form id="customRequestForm">
+
       <label>Customer Name <span>*</span></label>
-      <input type="text" id="customerName" placeholder="Enter your full name" required>
+      <input
+        type="text"
+        id="customer_name"
+        name="customer_name"
+        placeholder="Enter your full name"
+        required
+      >
 
       <label>Contact Number <span>*</span></label>
-      <input type="tel" id="contactNumber" placeholder="Enter your phone number" required>
+      <input
+        type="tel"
+        id="contact_number"
+        name="contact_number"
+        placeholder="Enter your phone number"
+        required
+      >
 
       <label>Email Address <span>*</span></label>
-      <input type="email" id="emailAddress" placeholder="Enter your email address" required>
+      <input
+        type="email"
+        id="email_address"
+        name="email_address"
+        placeholder="Enter your email address"
+        required
+      >
 
       <label>Product Type</label>
-      <input type="text" id="productType" placeholder="Enter product type">
+      <input
+        type="text"
+        id="product_type"
+        name="product_type"
+        placeholder="Enter product type (e.g., Sandals, Heels)"
+      >
 
       <label>Customization Details</label>
-      <textarea id="customDetails" placeholder="Please describe your customization requirements in detail (size, color, material, design preferences, etc.)" ></textarea>
+      <textarea
+        id="custom_details"
+        name="custom_details"
+        placeholder="Describe size, color, material, design preferences, etc."
+      ></textarea>
 
       <label>Preferred Contact Method <span>*</span></label>
       <div class="contact-options">
+
         <label>
-          <input type="radio" name="contactMethod" value="Call" required>
-          <img src="/assets/icons/Contact_Page_Icons/telephone (1).png" alt="Call"> Call
+          <input type="radio" name="contact_method" value="Call">
+          <img src="/assets/icons/Contact_Page_Icons/telephone (1).png" alt="Call">
+          Call
         </label>
+
         <label>
-          <input type="radio" name="contactMethod" value="WhatsApp">
-          <img src="/assets/icons/Contact_Page_Icons/whatsapp (1).png" alt="WhatsApp"> Whatsapp
+          <input type="radio" name="contact_method" value="WhatsApp">
+          <img src="/assets/icons/Contact_Page_Icons/whatsapp (1).png" alt="WhatsApp">
+          WhatsApp
         </label>
+
         <label>
-          <input type="radio" name="contactMethod" value="Email">
-          <img src="/assets/icons/Contact_Page_Icons/e-mail(1).png" alt="Email"> Email
+          <input type="radio" name="contact_method" value="Email">
+          <img src="/assets/icons/Contact_Page_Icons/e-mail(1).png" alt="Email">
+          Email
         </label>
+
       </div>
 
       <button type="submit" class="submit-btn">SUBMIT</button>
     </form>
   </section>
 
-  <!-- Right Info Section -->
+  <!-- Info Section -->
   <aside class="info-section">
+
     <div class="why-custom box">
       <h3>Why Choose Custom?</h3>
       <ul>
@@ -92,6 +131,7 @@
 
     <div class="timeline box">
       <h3>Process Timeline</h3>
+
       <div class="step">
         <div class="circle">1</div>
         <div class="text">
@@ -99,6 +139,7 @@
           <p>24–48 hours</p>
         </div>
       </div>
+
       <div class="step">
         <div class="circle">2</div>
         <div class="text">
@@ -106,6 +147,7 @@
           <p>3–5 business days</p>
         </div>
       </div>
+
       <div class="step">
         <div class="circle">3</div>
         <div class="text">
@@ -114,16 +156,14 @@
         </div>
       </div>
     </div>
+
   </aside>
 </main>
-
-
 
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-content">
 
-    <!-- Brand/About -->
     <div class="footer-about">
       <div class="brand">
         <h3>S&S FOOTWEARS</h3>
@@ -136,7 +176,6 @@
       </p>
     </div>
 
-    <!-- Quick Links -->
     <div class="footer-links">
       <h4>Quick Links</h4>
       <ul>
@@ -148,57 +187,26 @@
       </ul>
     </div>
 
-    <!-- Contact Info -->
     <div class="contact-info">
       <h4>Contact Info</h4>
       <p>
-        <img src="/assets/icons/Header-Footer_Icons/phone.png" alt="Phone" class="contact-icon">
+        <img src="/assets/icons/Header-Footer_Icons/phone.png" class="contact-icon">
         <a href="tel:0753755005">0753755005</a>
       </p>
       <p>
-        <img src="/assets/icons/Header-Footer_Icons/mail.png" alt="Email" class="contact-icon">
+        <img src="/assets/icons/Header-Footer_Icons/mail.png" class="contact-icon">
         <a href="mailto:ss01.footwear@gmail.com">ss01.footwear@gmail.com</a>
-      </p>
-      <p>
-        <img src="/assets/icons/Header-Footer_Icons/location.png" alt="Location" class="contact-icon">
-        <a href="https://maps.app.goo.gl/aLB4kqipQs7XuvLc8/" target="_blank">
-        S&S Shoes,<br>
-        No.14, Madolompitiya Road,<br>
-        Pallewela.
-        </a>
       </p>
     </div>
 
   </div>
 
-  <!-- Bottom Bar -->
   <div class="footer-bottom">
-    © 2025 S&S Footwear. All Rights Reserved.<br/>
-
-        <a id="admin-link" href="../admin/login.html" style="font-size:12px; color:#7a5a3d; display:none;">
-            ----------
-        </a>
+    © 2025 S&S Footwear. All Rights Reserved.
   </div>
 </footer>
 
 <script type="module" src="/js/customization.js"></script>
-<script type="module" src="/js/admin-customization-management.js"></script>
 
-<script type="module">
-import { auth } from "/js/firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
-
-const ADMIN_EMAILS = [
-    "gimhanihansika2020@gmail.com",
-    "ss01.footwear@gmail.com"
-];
-
-onAuthStateChanged(auth, (user) => {
-  if (user && ADMIN_EMAILS.includes(user.email)) {
-    document.getElementById("admin-link").style.display = "inline";
-  }
-});
-</script>
-  
 </body>
 </html>
