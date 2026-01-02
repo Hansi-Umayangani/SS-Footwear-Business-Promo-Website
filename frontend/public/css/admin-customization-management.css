@@ -267,7 +267,7 @@ img {
 
 .status-btn {
   border: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -276,14 +276,28 @@ img {
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
+/* Pending */
 .status-btn.pending {
   background: #ffeaa7;
   color: #7d5200;
 }
 
-.status-btn.accepted {
-  background: #c8f7c5;
+/* Contacted */
+.status-btn.contacted {
+  background: #cce5ff;
+  color: #004085;
+}
+
+/* Completed */
+.status-btn.completed {
+  background: #d4edda;
   color: #155724;
+}
+
+/* Cancelled */
+.status-btn.cancelled {
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .status-btn:hover {
