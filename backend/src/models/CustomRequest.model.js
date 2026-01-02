@@ -1,21 +1,37 @@
-const mongoose = require("mongoose");
+const pool = require("../config/db");
 
-const CustomRequestSchema = new mongoose.Schema(
-  {
-    customerName: { type: String, required: true },
-    contactNumber: { type: String, required: true },
-    emailAddress: { type: String, required: true },
-    productType: { type: String },
-    customDetails: { type: String },
-    contactMethod: { type: String, required: true },
-    status: {
-      type: String,
-      enum: ["Pending", "Accepted"],
-      default: "Pending"
-    }
+const CustomRequest = {
+  getAll: async () => {
+    const result = await pool.query(
+      "SELECT * FROM custom_requests ORDER BY created_at DESC"
+    );
+    return result.rows;
   },
-  { timestamps: true }
-);
 
-module.exports = mongoose.model("CustomRequest", CustomRequestSchema);
+  create: async (data) => {
+    const {
+      customerName,
+      contactNumber,
+      emailAddress,
+      productType,
+      customDetails,
+      contactMethod
+    } = data;
 
+    await pool.query(
+      `INSERT INTO custom_requests 
+      (customer_name, contact_number, email_address, product_type, custom_details, contact_method)
+      VALUES ($1,$2,$3,$4,$5,$6)`,
+      [
+        customerName,
+        contactNumber,
+        emailAddress,
+        productType,
+        customDetails,
+        contactMethod
+      ]
+    );
+  }
+};
+
+module.exports = CustomRequest;
