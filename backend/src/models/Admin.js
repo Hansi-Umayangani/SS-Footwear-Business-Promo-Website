@@ -1,19 +1,21 @@
-const mongoose = require("mongoose");
+const pool = require("../config/db");
 
-const adminSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true
+const Admin = {
+  findByEmail: async (email) => {
+    const result = await pool.query(
+      "SELECT * FROM admins WHERE email = $1",
+      [email]
+    );
+    return result.rows[0];
   },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    default: "admin"
+
+  create: async (email, password) => {
+    const result = await pool.query(
+      "INSERT INTO admins (email, password) VALUES ($1, $2) RETURNING *",
+      [email, password]
+    );
+    return result.rows[0];
   }
-});
+};
 
-module.exports = mongoose.model("Admin", adminSchema);
+module.exports = Admin;
