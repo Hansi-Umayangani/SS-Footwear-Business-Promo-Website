@@ -34,6 +34,21 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+/* ---------------- GET distinct categories ---------------- */
+exports.getCategories = async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT DISTINCT category FROM products ORDER BY category ASC"
+    );
+
+    const categories = result.rows.map(row => row.category);
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error("Fetch categories error:", error);
+    res.status(500).json({ message: "Failed to fetch categories" });
+  }
+};
+
 /* ---------------- UPDATE product ---------------- */
 exports.updateProduct = async (req, res) => {
   try {
