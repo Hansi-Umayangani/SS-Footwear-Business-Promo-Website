@@ -14,7 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const productForm = document.querySelector(".product-form");
   const productName = document.getElementById("product-name");
-  const category = document.getElementById("category");
+  const categorySelect = document.getElementById("category");
+  const newCategoryInput = document.getElementById("new-category");
   const price = document.getElementById("price");
   const description = document.getElementById("description");
   const productsTbody = document.getElementById("products-tbody");
@@ -23,16 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const imagePreview = document.getElementById("image-preview");
   const uploadBox = document.getElementById("upload-box");
   const browseBtn = document.getElementById("browse-btn");
-
-  /* ================= ADMIN NAV HIGHLIGHT ================= */
-  const btnProducts = document.getElementById("btn-products");
-  const btnReviews = document.getElementById("btn-reviews");
-  const btnCustomization = document.getElementById("btn-customization");
-
-  const url = window.location.href;
-  if (url.includes("product-management.html") && btnProducts) btnProducts.classList.add("active");
-  if (url.includes("review-management.html") && btnReviews) btnReviews.classList.add("active");
-  if (url.includes("customization-management.html") && btnCustomization) btnCustomization.classList.add("active");
 
   /* ================= AUTH UI ================= */
   if (loginOption && logoutOption) {
@@ -82,62 +73,114 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadBox.addEventListener("click", () => widget.open());
     browseBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      e.stopPropagation();
       widget.open();
     });
   }
 
   /* ================= FORM SUBMIT ================= */
-  if (productForm) {
-    productForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  productForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const payload = {
-        name: productName.value.trim(),
-        category: category.value.trim(),
-        price: Number(price.value),
-        description: description.value.trim(),
-        imageURL: uploadedImageURL,
+    // ✅ FIXED CATEGORY LOGIC
+    let finalCategory = "";
+
+    if (categorySelect.value === "__new__") {
+      finalCategory = newCategoryInput.value.trim();
+    } else {
+      finalCategory = categorySelect.value.trim();
+    }
+
+    if (!finalCategory) {
+      alert("Please select or enter a category.");
+      return;
+    }
+
+    const payload = {
+      name: productName.value.trim(),
+      category: finalCategory,
+      price: Number(price.value),
+      description: description.value.trim(),
+      imageURL: uploadedImageURL,
+    };
+
+    if (!payload.name || !payload.description || isNaN(payload.price)) {
+      alert("Please fill all fields correctly.");
+      return;
+    }
+
+    if (!editProductId && !uploadedImageURL) {
+      alert("Please upload a product image.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        editProductId ? `/api/products/${editProductId}` : "/api/products",
+        {
+          method: editProductId ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) throw new Error("Save failed");
+
+      alert(editProductId ? "Product updated successfully" : "Product added successfully");
+
+      editProductId = null;
+      uploadedImageURL = "";
+      imagePreview.style.display = "none";
+      newCategoryInput.style.display = "none";
+      productForm.reset();
+
+      loadCategories();
+      loadProducts();
+    } catch (err) {
+      console.error(err);
+      alert("Error saving product");
+    }
+  });
+
+  /* ================= LOAD CATEGORIES ================= */
+  async function loadCategories() {
+    try {
+      const res = await fetch("/api/products/categories", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const categories = await res.json();
+
+      categorySelect.innerHTML = `<option value="">Select Category</option>`;
+      newCategoryInput.style.display = "none";
+      newCategoryInput.value = "";
+
+      if (categories.length === 0) {
+        newCategoryInput.style.display = "block";
+        return;
+      }
+
+      categories.forEach((cat) => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+      });
+
+      const addNewOption = document.createElement("option");
+      addNewOption.value = "__new__";
+      addNewOption.textContent = "+ Add new category";
+      categorySelect.appendChild(addNewOption);
+
+      categorySelect.onchange = () => {
+        newCategoryInput.style.display =
+          categorySelect.value === "__new__" ? "block" : "none";
       };
-
-      if (!payload.name || !payload.category || !payload.description || isNaN(payload.price)) {
-        alert("Please fill all fields correctly.");
-        return;
-      }
-
-      if (!editProductId && !uploadedImageURL) {
-        alert("Please upload a product image.");
-        return;
-      }
-
-      try {
-        const res = await fetch(
-          editProductId ? `/api/products/${editProductId}` : "/api/products",
-          {
-            method: editProductId ? "PUT" : "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
-        if (!res.ok) throw new Error("Save failed");
-
-        alert(editProductId ? "Product updated successfully" : "Product added successfully");
-
-        editProductId = null;
-        uploadedImageURL = "";
-        imagePreview.style.display = "none";
-        productForm.reset();
-
-        loadProducts();
-      } catch (err) {
-        console.error(err);
-        alert("Error saving product");
-      }
-    });
+    } catch (err) {
+      console.error("Category load error:", err);
+    }
   }
 
   /* ================= LOAD PRODUCTS ================= */
@@ -148,12 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch("/api/products", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!res.ok) throw new Error("Fetch failed");
 
       const products = await res.json();
 
@@ -173,26 +212,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tr.querySelector(".delete").onclick = async () => {
           if (!confirm(`Delete "${product.name}"?`)) return;
-
           await fetch(`/api/products/${product.id}`, {
             method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` },
           });
-
           loadProducts();
         };
 
         tr.querySelector(".edit").onclick = () => {
           editProductId = product.id;
           productName.value = product.name;
-          category.value = product.category;
           price.value = product.price;
           description.value = product.description;
           previewImg.src = product.image_url;
           imagePreview.style.display = "block";
           uploadedImageURL = product.image_url;
+
+          if ([...categorySelect.options].some(o => o.value === product.category)) {
+            categorySelect.value = product.category;
+            newCategoryInput.style.display = "none";
+          } else {
+            categorySelect.value = "__new__";
+            newCategoryInput.value = product.category;
+            newCategoryInput.style.display = "block";
+          }
         };
 
         productsTbody.appendChild(tr);
@@ -203,5 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ================= INITIAL LOAD ================= */
+  loadCategories();
   loadProducts();
 });
