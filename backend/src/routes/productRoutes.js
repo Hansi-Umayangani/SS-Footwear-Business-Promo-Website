@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   getAllProducts,
+  getCategories,
   createProduct,
   updateProduct,
   deleteProduct
@@ -13,6 +14,12 @@ const {
  * @desc    Get all products
  */
 router.get("/", getAllProducts);
+
+/**
+ * @route   GET /api/products/categories
+ * @desc    Get distinct product categories
+ */
+router.get("/categories", getCategories);
 
 /**
  * @route   POST /api/products
