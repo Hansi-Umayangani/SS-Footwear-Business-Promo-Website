@@ -119,6 +119,10 @@ img {
   width: 30px;
 }
 
+.user-menu .dropdown.show {
+  display: block;
+}
+
 .user-menu .dropdown {
   display: none;
   position: absolute;
@@ -324,6 +328,44 @@ textarea::placeholder {
     width: 100%;
     margin-bottom: 15px;
     color: #2b1b0f;
+}
+
+/* -------- Category Select Styling -------- */
+select {
+  width: 100%;
+  padding: clamp(6px, 1vw, 10px);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  color: #3e2723;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #fff;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+select:focus {
+  border-color: #99662c;
+  box-shadow: 0 0 5px rgba(153, 102, 44, 0.3);
+  outline: none;
+}
+
+/* Custom dropdown arrow */
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #7e4723;
+  font-size: 0.7rem;
 }
 
 /* -------------------- Image Upload Box -------------------- */
