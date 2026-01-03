@@ -7,17 +7,4 @@ const pool = new Pool({
   }
 });
 
-const connectDB = async () => {
-  try {
-    await pool.query("SELECT 1");
-    console.log("Neon PostgreSQL connected successfully");
-  } catch (error) {
-    console.error("PostgreSQL connection failed:", error.message);
-    process.exit(1);
-  }
-};
-
-module.exports = {
-  pool,
-  connectDB
-};
+module.exports = pool;
