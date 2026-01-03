@@ -111,6 +111,10 @@ img {
   width: 30px;
 }
 
+.user-menu .dropdown.show {
+  display: block;
+}
+
 .user-menu .dropdown {
   display: none;
   position: absolute;
@@ -130,6 +134,11 @@ img {
   color: #FFF9F4;
   padding: 5px 10px;
   font-family: 'Open Sans', sans-serif;
+}
+
+.user-menu .dropdown a:hover {
+  background-color: #d2a06a;
+  color: #4b2e1e;
 }
 
 .login-icon {
