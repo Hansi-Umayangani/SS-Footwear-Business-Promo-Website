@@ -46,10 +46,21 @@
 
   <!-- Navigation buttons -->
   <div class="admin-nav">
-    <button id="btn-products" onclick="location.href='/pages/admin/product-management.html'">Product Management</button>
-    <button id="btn-reviews" onclick="location.href='/pages/admin/review-management.html'">Customer Reviews</button>
-    <button id="btn-customization" onclick="location.href='/pages/admin/customization-management.html'">Customization Requests</button>
+    <button
+      id="btn-products"
+      class="active"
+      onclick="location.href='/pages/admin/product-management.html'"
+    >
+      Product Management
+    </button>
 
+    <button id="btn-reviews" onclick="location.href='/pages/admin/review-management.html'">
+      Customer Reviews
+    </button>
+
+    <button id="btn-customization" onclick="location.href='/pages/admin/customization-management.html'">
+      Customization Requests
+    </button>
   </div>
 
   <!-- Product Management Section -->
@@ -68,7 +79,20 @@
           </div>
           <div class="form-group">
             <label for="category">Category</label>
-            <input type="text" id="category" placeholder="e.g. Men's Formal">
+
+            <div class="select-wrapper">
+              <select id="category" name="category">
+                <option value="">Select Category</option>
+                <option value="_new_">+ Add new category</option>
+              </select>
+            </div>
+
+            <input
+              type="text"
+              id="new-category"
+              placeholder="Enter new category name"
+              style="display: none; margin-top: 8px;"
+            />
           </div>
           <div class="form-group">
             <label for="price">Price</label>
