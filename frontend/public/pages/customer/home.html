@@ -184,20 +184,6 @@
 
 <script type="module" src="/js/home.js"></script>
 <script type="module" src="/js/products.js"></script>
-
-<script type="module">
-
-const ADMIN_EMAILS = [
-  "gimhanihansika2020@gmail.com",
-  "ss01.footwear@gmail.com"
-];
-
-onAuthStateChanged(auth, (user) => {
-  if (user && ADMIN_EMAILS.includes(user.email)) {
-    document.getElementById("admin-link").style.display = "inline";
-  }
-});
-</script>
   
 </body>
 </html>
