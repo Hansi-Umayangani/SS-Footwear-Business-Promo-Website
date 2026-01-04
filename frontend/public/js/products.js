@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 // ------------------ GLOBAL STATE ------------------
 let allProducts = [];
 let currentFilter = "all";
@@ -79,7 +81,7 @@ function displayProducts(products) {
 // ------------------ LOAD PRODUCTS FROM BACKEND ------------------
 async function loadProducts() {
   try {
-    const res = await fetch("/api/products");
+    const res = await fetch(`${API_BASE}/api/products`);
 
     if (!res.ok) throw new Error("Failed to fetch products");
 

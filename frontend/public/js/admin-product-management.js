@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ================= AUTH GUARD ================= */
   const token = localStorage.getItem("adminToken");
@@ -81,7 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
   productForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // ✅ FIXED CATEGORY LOGIC
     let finalCategory = "";
 
     if (categorySelect.value === "__new__") {
@@ -115,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch(
-        editProductId ? `/api/products/${editProductId}` : "/api/products",
+        editProductId ? `${API_BASE}/api/products/${editProductId}` : `${API_BASE}/api/products`,
         {
           method: editProductId ? "PUT" : "POST",
           headers: {
@@ -147,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ================= LOAD CATEGORIES ================= */
   async function loadCategories() {
     try {
-      const res = await fetch("/api/products/categories", {
+      const res = await fetch(`${API_BASE}/api/products/categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -190,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     productsTbody.innerHTML = "";
 
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch(`${API_BASE}/api/products`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -212,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tr.querySelector(".delete").onclick = async () => {
           if (!confirm(`Delete "${product.name}"?`)) return;
-          await fetch(`/api/products/${product.id}`, {
+          await fetch(`${API_BASE}/api/products/${product.id}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${token}` },
           });

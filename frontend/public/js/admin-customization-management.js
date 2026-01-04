@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 function capitalize(word) {
   if (!word) return "";
   return word.charAt(0).toUpperCase() + word.slice(1);
@@ -64,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- FETCH CUSTOM REQUESTS ---------------- */
   async function fetchCustomizationRequests() {
     try {
-      const res = await fetch("/api/custom-requests", {
+      const res = await fetch(`${API_BASE}/api/custom-requests`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -122,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "pending";
 
           try {
-            const res = await fetch(`/api/custom-requests/${request.id}`, {
+            const res = await fetch(`${API_BASE}/api/custom-requests/${request.id}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -147,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!confirm("Are you sure you want to delete this request?")) return;
 
           try {
-            const res = await fetch(`/api/custom-requests/${request.id}`, {
+            const res = await fetch(`${API_BASE}/api/custom-requests/${request.id}`, {
               method: "DELETE",
               headers: {
                 Authorization: `Bearer ${token}`

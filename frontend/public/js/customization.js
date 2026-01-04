@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- DOM ELEMENTS ---------------- */
   const navLinks = document.querySelectorAll(".nav-links a");
@@ -75,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ---------------- Submit to API ---------------- */
     try {
-      const res = await fetch("/api/custom-requests", {
+      const res = await fetch(`${API_BASE}/api/custom-requests`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

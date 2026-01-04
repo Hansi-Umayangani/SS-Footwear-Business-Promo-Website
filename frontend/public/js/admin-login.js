@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ---------------- DOM ELEMENTS ---------------- */
   const loginForm = document.getElementById("loginForm");
@@ -68,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const res = await fetch("/api/admin/login", {
+        const res = await fetch(`${API_BASE}/api/admin/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })

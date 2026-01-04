@@ -1,6 +1,4 @@
-/* ===============================
-   HOME PAGE SCRIPT
-   =============================== */
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
 
 document.addEventListener("DOMContentLoaded", () => {
   loadFeaturedProducts();
@@ -17,7 +15,7 @@ async function loadFeaturedProducts() {
   }
 
   try {
-    const response = await fetch("/api/products");
+    const response = await fetch(`${API_BASE}/api/products`);
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);

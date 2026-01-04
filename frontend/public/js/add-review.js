@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 /* ---------------- DOM Ready ---------------- */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -53,7 +55,7 @@ if (logoutOption) {
     const widget = window.cloudinary.createUploadWidget(
       {
         cloudName: "dvcmr9ojz",
-        uploadPreset: "unsigned_preset", // MUST be unsigned
+        uploadPreset: "unsigned_preset",
         multiple: false,
         folder: "reviews"
       },
@@ -105,7 +107,7 @@ if (logoutOption) {
     submitBtn.textContent = "Submitting...";
 
     try {
-      const res = await fetch("/api/reviews", {
+      const res = await fetch(`${API_BASE}/api/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

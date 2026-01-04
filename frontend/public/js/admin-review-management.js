@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 // ====================== ADMIN NAV HIGHLIGHT ======================
 document.addEventListener("DOMContentLoaded", () => {
   const btnProducts = document.getElementById("btnProducts");
@@ -119,7 +121,7 @@ async function uploadImageToCloudinary(file) {
 
 // ====================== LOAD REVIEWS (ADMIN) ======================
 async function loadReviews() {
-  const res = await fetch("/api/reviews/admin");
+  const res = await fetch(`${API_BASE}/api/reviews/admin`);
   const reviews = await res.json();
 
   reviewsTableBody.innerHTML = "";
@@ -187,7 +189,7 @@ function fillFormForEdit(review) {
 async function deleteReview(id) {
   if (!confirm("Are you sure you want to delete this review?")) return;
 
-  await fetch(`/api/reviews/admin/${id}`, { method: "DELETE" });
+  await fetch(`https://ss-footwear-business-promo-website.vercel.app/api/reviews/admin/${id}`, { method: "DELETE" });
   loadReviews();
 }
 
