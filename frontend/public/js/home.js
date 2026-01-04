@@ -48,7 +48,7 @@ async function loadFeaturedProducts() {
         ? product.image_url
         : "/assets/images/no-image.png";
 
-      card.innerHTML = `
+        card.innerHTML = `
         <img 
           src="${imageSrc}" 
           alt="${product.name || "Product image"}"
