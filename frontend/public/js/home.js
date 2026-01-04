@@ -44,9 +44,9 @@ async function loadFeaturedProducts() {
       card.className = "product-card";
 
       const imageSrc =
-        product.imageURL && product.imageURL.trim() !== ""
-          ? product.imageURL
-          : "/assets/images/no-image.png"; // fallback image
+      product.image_url && product.image_url.trim() !== ""
+        ? product.image_url
+        : "/assets/images/no-image.png";
 
       card.innerHTML = `
         <img 
