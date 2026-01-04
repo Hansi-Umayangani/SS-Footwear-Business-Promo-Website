@@ -184,6 +184,17 @@
 
 <script type="module" src="/js/home.js"></script>
 <script type="module" src="/js/products.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const adminLink = document.getElementById("admin-link");
+    const adminToken = localStorage.getItem("adminToken");
+
+    if (adminToken && adminLink) {
+      adminLink.style.display = "inline";
+    }
+  });
+</script>
   
 </body>
 </html>

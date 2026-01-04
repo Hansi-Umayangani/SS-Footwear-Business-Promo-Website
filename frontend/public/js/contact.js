@@ -18,14 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // -------- Highlight user icon --------
-  if (currentPage === "admin-login.html") {
+  if (currentPage === "admin-login.html" && userMenu) {
     userMenu.classList.add("active");
   }
 
   // -------- Dropdown toggle --------
-  if (userMenu) {
+  if (userMenu && userDropdown) {
     userMenu.addEventListener("click", () => {
-      userDropdown.style.display = userDropdown.style.display === "block" ? "none" : "block";
+      userDropdown.style.display =
+        userDropdown.style.display === "block" ? "none" : "block";
     });
 
     document.addEventListener("click", (e) => {
@@ -40,38 +41,33 @@ document.addEventListener("DOMContentLoaded", () => {
     menuToggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
     });
-  }  
-  // -------- Firebase Auth --------
-  if (typeof auth !== "undefined") {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (loginOption) loginOption.style.display = "none";
-        if (logoutOption) logoutOption.style.display = "flex";
-        if (userMenu) userMenu.classList.add("active");
-      } else {
-        if (loginOption) loginOption.style.display = "flex";
-        if (logoutOption) logoutOption.style.display = "none";
-        if(currentPage !== "admin-login.html" && userMenu) {
-          userMenu.classList.remove("active");
-        }
-      }
-    });
+  }
 
-    if (logoutOption) {
-      logoutOption.addEventListener("click", async (e) => {
-        e.preventDefault();
-        try {
-          await signOut(auth);
-          window.location.reload();
-        } catch (error) {
-          console.error(error);
-        }
-      });
+  // -------- Token-based Auth (NO Firebase) --------
+  const adminToken = localStorage.getItem("adminToken");
+
+  if (adminToken) {
+    if (loginOption) loginOption.style.display = "none";
+    if (logoutOption) logoutOption.style.display = "flex";
+    if (userMenu) userMenu.classList.add("active");
+  } else {
+    if (loginOption) loginOption.style.display = "flex";
+    if (logoutOption) logoutOption.style.display = "none";
+    if (userMenu && currentPage !== "admin-login.html") {
+      userMenu.classList.remove("active");
     }
   }
 
-  // -------- WhatsApp Contact Form Submission --------
- if (contactForm) {
+  if (logoutOption) {
+    logoutOption.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("adminToken");
+      window.location.href = "/admin-login.html";
+    });
+  }
+
+  // -------- WhatsApp Contact Form --------
+  if (contactForm) {
     contactForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -82,28 +78,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const subject = document.getElementById("subject").value;
       const message = document.getElementById("message").value.trim();
 
-      const whatsappMessage = 
-  "New Contact Form Submission%0A" +
-  "Name: " + firstName + " " + lastName + "%0A" +
-  "Email: " + email + "%0A" +
-  "Phone: " + phone + "%0A" +
-  "Subject: " + subject + "%0A" +
-  "Message: " + message;
+      const whatsappMessage =
+        `New Contact Form Submission\n` +
+        `Name: ${firstName} ${lastName}\n` +
+        `Email: ${email}\n` +
+        `Phone: ${phone}\n` +
+        `Subject: ${subject}\n` +
+        `Message: ${message}`;
 
       const encodedMessage = encodeURIComponent(whatsappMessage);
-
       const businessNumber = "94753755005";
 
-      if (/Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
-      
-        window.open(`https://wa.me/94753755005?text=${whatsappMessage}`, "_blank");
-      } else {
+      const url = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)
+        ? `https://wa.me/${businessNumber}?text=${encodedMessage}`
+        : `https://web.whatsapp.com/send?phone=${businessNumber}&text=${encodedMessage}`;
 
-        window.open(`https://web.whatsapp.com/send?phone=94753755005&text=${whatsappMessage}`, "_blank");
-      }
-
-      window.open(whatsappURL, "_blank");
-
+      window.open(url, "_blank");
       contactForm.reset();
     });
   }
