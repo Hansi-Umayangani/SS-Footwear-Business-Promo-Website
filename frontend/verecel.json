@@ -2,11 +2,7 @@
   "version": 2,
   "routes": [
     {
-      "src": "/admin/?$",
-      "dest": "/public/pages/admin/login.html"
-    },
-    {
-      "src": "/admin/login/?$",
+      "src": "^/admin/?$",
       "dest": "/public/pages/admin/login.html"
     },
     {
