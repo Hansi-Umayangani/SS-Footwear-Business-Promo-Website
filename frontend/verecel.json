@@ -2,18 +2,16 @@
   "version": 2,
   "routes": [
     {
-      "src": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "admin-ss-footwear-business-website.vercel.app"
-        }
-      ],
-      "dest": "/public/pages/admin/$1"
+      "src": "/admin/?$",
+      "dest": "/public/pages/admin/login.html"
+    },
+    {
+      "src": "/admin/login/?$",
+      "dest": "/public/pages/admin/login.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/pages/customer/$1"
+      "dest": "/public/$1"
     }
   ]
 }
