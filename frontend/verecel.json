@@ -1,14 +1,9 @@
 {
   "version": 2,
-  "public": true,
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/admin/?$",
-      "dest": "/pages/admin/login.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/admin",
+      "destination": "/pages/admin/login.html"
     }
   ]
 }
