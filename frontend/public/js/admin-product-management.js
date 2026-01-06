@@ -1,4 +1,4 @@
-const API_BASE = "";
+const API_BASE = "https://ss-footwear-business-website.vercel.app";
 
 document.addEventListener("DOMContentLoaded", () => {
   /* ================= AUTH GUARD ================= */

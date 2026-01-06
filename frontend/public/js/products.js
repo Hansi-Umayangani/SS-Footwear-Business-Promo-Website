@@ -1,4 +1,4 @@
-const API_BASE = "";
+const API_BASE = "https://ss-footwear-business-website.vercel.app";
 
 // ------------------ GLOBAL STATE ------------------
 let allProducts = [];
