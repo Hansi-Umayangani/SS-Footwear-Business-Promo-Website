@@ -3,7 +3,17 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "has": [
+        {
+          "type": "host",
+          "value": "admin-ss-footwear-business-website.vercel.app"
+        }
+      ],
+      "dest": "/public/pages/admin/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/pages/customer/$1"
     }
   ]
 }
