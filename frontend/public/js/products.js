@@ -18,11 +18,12 @@ const categoryMap = {
 
 // ------------------- SEARCH SYNONYMS -------------------
 const searchMap = {
-  "heels": "Women's Heels",
-  "flats": "Women's Flats",
-  "sandals": ["Men's Sandals", "Women's Sandals"],
-  "formal": "Men's Formal",
-  "school": "School Shoes"
+  "men's formal": ["men's formal", "formal shoes", "office shoes", "gents formal"],
+  "men's sandals": ["men's sandals", "gents sandals", "men sandals"],
+  "women's heels": ["women's heels", "heels", "ladies heels", "high heels"],
+  "women's flats": ["women's flats", "ladies flats", "flat shoes"],
+  "women's sandals": ["women's sandals", "ladies sandals"],
+  "school shoes": ["school shoes", "kids shoes", "school footwear"]
 };
 
 // ------------------- NORMALIZE TEXT -------------------
@@ -31,6 +32,24 @@ function normalizeText(text = "") {
     .toLowerCase()
     .replace(/\s+/g, "")
     .replace(/[^a-z0-9]/g, "");
+}
+
+function getMappedCategory(searchText) {
+  const normalizedSearch = normalizeText(searchText);
+
+  for (const category in searchMap) {
+    const synonyms = searchMap[category];
+
+    if (
+      synonyms.some(
+        synonym => normalizeText(synonym) === normalizedSearch
+      )
+    ) {
+      return category;
+    }
+  }
+
+  return null;
 }
 
 // ------------------- DISPLAY PRODUCTS -------------------
@@ -47,22 +66,21 @@ function displayProducts(products) {
       targetCategory.includes("all") ||
       normalizeText(p.category) === normalizeText(targetCategory[0]);
 
-    const searchText = normalizeText(currentSearch);
+    const searchText = currentSearch.trim();
     let matchesSearch = true;
 
     if (searchText) {
-      const mapped = searchMap[searchText];
+      const mappedCategory = getMappedCategory(searchText);
 
-      if (mapped) {
-        const categories = Array.isArray(mapped) ? mapped : [mapped];
-        matchesSearch = categories.some(cat =>
-          normalizeText(p.category) === normalizeText(cat)
-        );
-      } else {
+      if (mappedCategory) {
         matchesSearch =
-          normalizeText(p.name).includes(searchText) ||
-          normalizeText(p.description).includes(searchText) ||
-          normalizeText(p.category).includes(searchText);
+          normalizeText(p.category) === normalizeText(mappedCategory);
+      } else {
+        const normalizedSearch = normalizeText(searchText);
+        matchesSearch =
+          normalizeText(p.name).includes(normalizedSearch) ||
+          normalizeText(p.description).includes(normalizedSearch) ||
+          normalizeText(p.category).includes(normalizedSearch);
       }
     }
 
