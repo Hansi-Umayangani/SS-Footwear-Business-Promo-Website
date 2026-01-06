@@ -1,13 +1,14 @@
 {
   "version": 2,
+  "public": true,
   "routes": [
     {
       "src": "^/admin/?$",
-      "dest": "/public/pages/admin/login.html"
+      "dest": "/pages/admin/login.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "/$1"
     }
   ]
 }
