@@ -1,3 +1,5 @@
+const API_BASE = "https://ss-footwear-business-promo-website.vercel.app";
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ===============================
      NAV & USER MENU ELEMENTS
@@ -116,10 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="review-text">${review.review_text}</p>
 
         ${
-          review.image
+          review.image_url
             ? `<p class="review-image-link">
                 <a href="${review.image_url}" target="_blank" rel="noopener noreferrer"
-                   style="color:#8f4c00ff;text-decoration:underline;">
+                  style="color:#8f4c00ff;text-decoration:underline;">
                   View Image &gt;&gt;&gt;
                 </a>
               </p>`
@@ -173,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
      =============================== */
   async function loadReviews() {
     try {
-      const res = await fetch("/api/reviews");
+      const res = await fetch(`${API_BASE}/api/reviews`);
       if (!res.ok) throw new Error("Failed to fetch reviews");
 
       const reviews = await res.json();
