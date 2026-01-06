@@ -48,12 +48,23 @@ function displayProducts(products) {
       normalizeText(p.category) === normalizeText(targetCategory[0]);
 
     const searchText = normalizeText(currentSearch);
+    let matchesSearch = true;
 
-    const matchesSearch =
-      !searchText ||
-      normalizeText(p.name).includes(searchText) ||
-      normalizeText(p.description).includes(searchText) ||
-      normalizeText(p.category).includes(searchText);
+    if (searchText) {
+      const mapped = searchMap[searchText];
+
+      if (mapped) {
+        const categories = Array.isArray(mapped) ? mapped : [mapped];
+        matchesSearch = categories.some(cat =>
+          normalizeText(p.category) === normalizeText(cat)
+        );
+      } else {
+        matchesSearch =
+          normalizeText(p.name).includes(searchText) ||
+          normalizeText(p.description).includes(searchText) ||
+          normalizeText(p.category).includes(searchText);
+      }
+    }
 
     return matchesCategory && matchesSearch;
   });
@@ -112,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
   filterButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       currentFilter = btn.dataset.category;
-      currentSearch = "";
 
       filterButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
