@@ -483,6 +483,7 @@ select:focus {
   min-width: 600px;
   border-collapse: collapse;
   font-family: 'Open Sans', sans-serif;
+  table-layout: fixed;
 }
 
 .products-table th,
@@ -546,10 +547,22 @@ select:focus {
   text-align: center;
 }
 
+/* Name column - make narrower */
+.products-table th:nth-child(2),
+.products-table td:nth-child(2) {
+  width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* -------- Product Description Column -------- */
-.products-table td.description-cell,
-.products-table th.description-cell {
-  max-width: 250px;
+.products-table th.description-cell,
+.products-table td.description-cell {
+  width: 350px;
+  max-width: 350px;
+  min-width: 300px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
