@@ -381,7 +381,7 @@ section {
   margin: 2rem auto 0;
   width: 100%;
   max-width: 1700px;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* Large Desktop (>=1780px) → 6 cards per row */
@@ -429,6 +429,7 @@ section {
 /* ---------------- Product Card ---------------- */
 .product-card {
   background: #ffe9cf;
+  height: 100%;
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 
@@ -473,7 +474,7 @@ section {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 1rem;
-  margin-top: 0.2rem;
+  margin-top: auto; 
   color: #3d2e1e;
 }
 
