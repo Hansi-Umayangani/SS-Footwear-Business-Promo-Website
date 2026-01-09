@@ -369,6 +369,10 @@ section {
   line-height: 1.5;
 }
 
+.products {
+  text-align: center;
+}
+
 /* ---------------- Product Grid ---------------- */
 .product-list {
   display: grid;
@@ -483,14 +487,14 @@ section {
   font-size: clamp(0.65rem, 1vw, 1rem);
   font-family: "Open Sans", sans-serif;
   border-radius: 10px;
-  display: inline-block;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   margin-top: 2.5rem;
-  align-items: center;
+  display: block; 
+  margin: 2.5rem auto 0;
 }
 
 .btn.view-all:hover {
