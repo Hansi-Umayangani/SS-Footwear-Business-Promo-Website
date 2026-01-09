@@ -8,61 +8,63 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadFeaturedProducts() {
   const productContainer = document.getElementById("featured-products");
 
-  if (!productContainer) return;
+  // Safety check
+  if (!productContainer) {
+    console.warn("#featured-products container not found");
+    return;
+  }
 
   try {
     const response = await fetch(`${API_BASE}/api/products`);
-    if (!response.ok) throw new Error("Failed to load products");
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
     const products = await response.json();
-    if (!Array.isArray(products)) throw new Error("Invalid response");
+
+    if (!Array.isArray(products)) {
+      throw new Error("Invalid products response");
+    }
 
     productContainer.innerHTML = "";
 
     if (products.length === 0) {
-      productContainer.innerHTML = `<p>No products available.</p>`;
+      productContainer.innerHTML =
+        "<p class='empty-msg'>No products available.</p>";
       return;
     }
 
-    // Latest 6 products
-    products.slice(0, 6).forEach(product => {
+    // Show latest 6 products
+    const featuredProducts = products.slice(0, 6);
+
+    featuredProducts.forEach((product) => {
       const card = document.createElement("div");
       card.className = "product-card";
 
       const imageSrc =
-        typeof product.image_url === "string" && product.image_url.trim()
+        product.image_url && product.image_url.trim() !== ""
           ? product.image_url
           : "/assets/images/no-image.png";
 
-      const name = product.name || "Unnamed Product";
-
-      // 🔑 truncate description to fit CSS card height
-      const description =
-        product.description
-          ? product.description.length > 90
-            ? product.description.substring(0, 90) + "..."
-            : product.description
-          : "No description available.";
-
       const price =
-        typeof product.price === "number"
-          ? `Rs. ${product.price.toFixed(2)}`
+        product.price !== undefined && product.price !== null
+          ? `Rs. ${Number(product.price).toFixed(2)}`
           : "Price unavailable";
 
       card.innerHTML = `
-        <img src="${imageSrc}" alt="${name}">
-        <h3>${name}</h3>
-        <p>${description}</p>
+        <img src="${imageSrc}" alt="${product.name || "Product image"}">
+        <h3>${product.name || "Unnamed Product"}</h3>
+        <p>${product.description || "No description available."}</p>
         <div class="price">${price}</div>
       `;
 
       productContainer.appendChild(card);
     });
 
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Error loading featured products:", error);
     productContainer.innerHTML =
-      `<p>Unable to load featured products.</p>`;
+      "<p class='error-msg'>Unable to load products.</p>";
   }
 }
-

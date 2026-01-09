@@ -369,37 +369,6 @@ section {
   line-height: 1.5;
 }
 
-/* ---------------- Products Section ---------------- */
-.products {
-  position: relative;
-  width: 100%;
-  min-height: clamp(15rem, 80vh, 50rem);
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 2rem 2rem;
-  text-align: center;
-  color: #3d2e1e;
-}
-
-.products h2 {
-  position: relative;
-  top: 2rem;
-  font-size: clamp(1.8rem, 2.5vw, 2.2rem);
-  margin-bottom: -1rem;
-  font-family: 'Playfair Display', serif;
-}
-
-.products p {
-  font-size: clamp(1rem, 1.2vw, 1.2rem);
-  margin-top: 50px;
-  margin-bottom: 0rem;
-  line-height: 1.6;
-}
-
 /* ---------------- Product Grid ---------------- */
 .product-list {
   display: grid;
@@ -481,11 +450,13 @@ section {
   color: #8B4513;
   font-family: 'Playfair Display', serif;
   font-size: clamp(1rem, 1.5vw, 1.25rem);
+  margin-bottom: 0.3rem;  
 }
 
 .product-card p {
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   line-height: 1.5;
+  margin-bottom: 1.2rem;  
 }
 
 /* Price */
@@ -493,6 +464,7 @@ section {
   font-weight: semi-bold;
   font-size: 1rem;
   margin-bottom: 1rem;
+  margin-top: 0.2rem;
   color: #3d2e1e;
 }
 
