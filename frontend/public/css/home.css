@@ -486,10 +486,15 @@ section {
 .product-card p {
   font-size: clamp(0.85rem, 1.2vw, 1rem);
   line-height: 1.5;
-  margin-bottom: 4rem;
-
 }
 
+/* Price */
+.product-card .price {
+  font-weight: semi-bold;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #3d2e1e;
+}
 
 /* View All Products Button */
 .btn.view-all {

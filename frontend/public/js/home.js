@@ -59,8 +59,8 @@ async function loadFeaturedProducts() {
           class="product-image"
         />
         <h3 class="product-name">${product.name}</h3>
-        <div class="product-price">${price}</div>
         <p class="product-desc">${product.description}</p>
+        <div class="product-price">${price}</div>
       `;
 
       productContainer.appendChild(card);
