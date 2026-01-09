@@ -53,14 +53,10 @@ async function loadFeaturedProducts() {
           : "Price unavailable";
 
       card.innerHTML = `
-        <img 
-          src="${imageSrc}" 
-          alt="${product.name || "Product image"}"
-          class="product-image"
-        />
-        <h3 class="product-name">${product.name}</h3>
-        <p class="product-desc">${product.description}</p>
-        <div class="product-price">${price}</div>
+        <img src="${imageSrc}" alt="${product.name || "Product image"}">
+        <h3>${product.name || "Unnamed Product"}</h3>
+        <p>${product.description || "No description available."}</p>
+        <div class="price">${price}</div>
       `;
 
       productContainer.appendChild(card);
