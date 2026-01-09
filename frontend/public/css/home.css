@@ -493,8 +493,7 @@ section {
   transition: all 0.3s ease;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   margin-top: 2.5rem;
-  display: block; 
-  margin: 2.5rem auto 0;
+  display: inline-block;
 }
 
 .btn.view-all:hover {
