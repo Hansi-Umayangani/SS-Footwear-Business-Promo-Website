@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><img src="${product.image_url}" width="60"></td>
           <td>${product.name}</td>
           <td>${product.category}</td>
-          <td>${product.description}</td>
+          <td class="description-cell">${product.description}</td>
           <td>Rs. ${product.price}</td>
           <td class="actions">
             <button type="button" class="edit"></button>

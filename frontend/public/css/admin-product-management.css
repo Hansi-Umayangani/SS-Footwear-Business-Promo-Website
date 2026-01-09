@@ -548,12 +548,23 @@ select:focus {
   text-align: center;
 }
 
+/* -------- Product Description Column -------- */
+.products-table td.description-cell,
+.products-table th.description-cell {
+  max-width: 250px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Actions Column */
-.products-table td:nth-child(5) {
+.products-table td:nth-child(6) {
   line-height: 5;
   min-height: 130px;
-} 
-.products-table th:nth-child(5) {
+}
+
+.products-table th:nth-child(6) {
   text-align: center;
   width: 90px;
   vertical-align: middle;
