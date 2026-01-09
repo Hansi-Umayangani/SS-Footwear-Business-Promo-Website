@@ -184,7 +184,7 @@ img {
 /* Product Grid */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 260px));
   gap: 2rem;
   justify-content: center;
 }
@@ -217,7 +217,6 @@ img {
   color: #8B4513;
   font-family: 'Playfair Display', serif;
   font-size: clamp(1rem, 1.5vw, 1.25rem);
-  margin-bottom: 0.5rem;
 }
 
 .product-card p {
