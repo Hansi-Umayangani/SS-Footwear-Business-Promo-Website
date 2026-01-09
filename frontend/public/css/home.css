@@ -377,6 +377,7 @@ section {
   margin: 2rem auto 0;
   width: 100%;
   max-width: 1700px;
+  align-items: center;
 }
 
 /* Large Desktop (>=1780px) → 6 cards per row */
@@ -473,7 +474,7 @@ section {
 }
 
 /* View All Products Button */
-.btn .view-all {
+.btn.view-all {
   padding: 0.6rem 1.5rem;
   border: none;
   background: #ad6410fb;
