@@ -465,7 +465,7 @@ section {
 
 /* Price */
 .product-card .price {
-  font-weight: semi-bold;
+  font-weight: 600;
   font-size: 1rem;
   margin-bottom: 1rem;
   margin-top: 0.2rem;
