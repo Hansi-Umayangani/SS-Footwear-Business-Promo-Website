@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* -------- Featured Products -------- */
 async function loadFeaturedProducts() {
-  const productContainer = document.querySelector(".product-list");
+  const productContainer = document.getElementById("featured-products");
 
   // Safety check
   if (!productContainer) {
-    console.warn(".product-list container not found");
+    console.warn("#featured-products container not found");
     return;
   }
 
@@ -23,7 +23,6 @@ async function loadFeaturedProducts() {
 
     const products = await response.json();
 
-    // Validate response
     if (!Array.isArray(products)) {
       throw new Error("Invalid products response");
     }
@@ -36,7 +35,7 @@ async function loadFeaturedProducts() {
       return;
     }
 
-    // Show latest 6 products (backend already sorted by createdAt desc)
+    // Show latest 6 products
     const featuredProducts = products.slice(0, 6);
 
     featuredProducts.forEach((product) => {
@@ -44,11 +43,16 @@ async function loadFeaturedProducts() {
       card.className = "product-card";
 
       const imageSrc =
-      product.image_url && product.image_url.trim() !== ""
-        ? product.image_url
-        : "/assets/images/no-image.png";
+        product.image_url && product.image_url.trim() !== ""
+          ? product.image_url
+          : "/assets/images/no-image.png";
 
-        card.innerHTML = `
+      const price =
+        product.price !== undefined && product.price !== null
+          ? `Rs. ${Number(product.price).toFixed(2)}`
+          : "Price unavailable";
+
+      card.innerHTML = `
         <img 
           src="${imageSrc}" 
           alt="${product.name || "Product image"}"
@@ -56,6 +60,7 @@ async function loadFeaturedProducts() {
         />
         <h3 class="product-name">${product.name}</h3>
         <p class="product-desc">${product.description}</p>
+        <div class="product-price">${price}</div>
       `;
 
       productContainer.appendChild(card);
