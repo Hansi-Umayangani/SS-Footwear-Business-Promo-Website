@@ -473,7 +473,7 @@ section {
 }
 
 /* View All Products Button */
-.btn.view-all {
+.btn .view-all {
   padding: 0.6rem 1.5rem;
   border: none;
   background: #ad6410fb;
@@ -489,6 +489,7 @@ section {
   transition: all 0.3s ease;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   margin-top: 2.5rem;
+  align-items: center;
 }
 
 .btn.view-all:hover {
